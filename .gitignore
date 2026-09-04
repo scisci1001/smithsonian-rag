@@ -3,6 +3,12 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# IntelliJ settings
+*.iml
+misc.xml
+modules.xml
+vcs.xml
+
 # C extensions
 *.so
 
