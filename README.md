@@ -1,5 +1,5 @@
-# smithsonian-rag
-Production-oriented multimodal RAG system for semantic search and grounded question answering over Smithsonian Open Access collections.
+# smithsonian-rag --- Smithsonian Collection Investigator
+An evidence-driven multimodal RAG system that investigates research questions across Smithsonian Open Access collections and produces grounded, claim-level answers backed by retrieved collection evidence.
 
 ## Data & Licensing
 

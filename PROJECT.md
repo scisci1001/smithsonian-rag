@@ -156,24 +156,31 @@ technically appropriate.
 
 ## 5. Product Use Case
 
-**Status:** Open
+**Status:** Accepted
 
-The concrete user-facing use case has not yet been selected.
+### Smithsonian Collection Investigator
 
-The use case must determine which RAG capabilities are genuinely useful
-rather than implementing techniques only for demonstration purposes.
+`smithsonian-rag` will be an evidence-driven multimodal RAG system for investigating research questions across Smithsonian Open Access collections.
 
-Potential directions include:
+The system should retrieve relevant collection evidence, aggregate evidence across records and collections where necessary, and produce grounded answers with citations.
 
--   a virtual museum research assistant
--   semantic exploration of Smithsonian collections
--   cross-collection question answering
--   multimodal object discovery
--   historically or semantically related object discovery
--   research-oriented synthesis across collection records
+The product should go beyond a generic "chat with museum data" experience. It should support direct and metadata-constrained retrieval, comparative retrieval, temporal comparison, multi-document evidence synthesis, cross-collection retrieval, query decomposition, and claim-level grounding.
 
-The selected use case should support sufficiently difficult retrieval
-problems to justify advanced RAG techniques.
+Generated conclusions must be scoped to the evidence retrieved from the Smithsonian corpus rather than presented as universal historical truth.
+
+### V1 Collection Scope
+
+**Status:** Accepted
+
+The initial corpus will focus on:
+
+- National Air and Space Museum (NASM)
+- National Museum of American History (NMAH)
+
+This provides a controlled scope while enabling cross-collection investigations involving aerospace, computing, electronics, technology, material culture, and American history.
+
+The exact record selection, corpus size, usable fields, media availability, and rights constraints remain to be validated during the Dataset Feasibility Spike.
+
 
 ------------------------------------------------------------------------
 
@@ -769,7 +776,57 @@ made.
 
 ------------------------------------------------------------------------
 
-## 18. Open Questions
+## 18. Representative Research Questions
+
+**Status:** Candidate evaluation set
+
+These questions define the retrieval and synthesis capabilities the system should eventually support. They are not yet ground-truth evaluation questions; answerability must first be validated against the actual NASM/NMAH Open Access corpus.
+
+### Level 1 — Direct Evidence Retrieval
+
+**Q01.** What materials were used to construct Apollo Guidance Computer artifacts in the Smithsonian collection?
+
+**Q02.** Who designed and manufactured the Apollo Guidance Computer, and what organizations supplied its key electronic components?
+
+**Q03.** Which Apollo 11 personal equipment objects associated with Buzz Aldrin are represented in the collection?
+
+### Level 2 — Filtered and Structured Retrieval
+
+**Q04.** Which guidance and navigation artifacts in the collection were manufactured by Raytheon for the Apollo program?
+
+**Q05.** What Smithsonian computing artifacts associated with human spaceflight were produced by IBM, Raytheon, or MIT-related organizations?
+
+**Q06.** Which Apollo 11 objects in the collection were flown on the mission, and which comparable objects are unflown examples or test articles?
+
+### Level 3 — Comparative Retrieval
+
+**Q07.** How did onboard computing evolve from the Gemini program to the Apollo program, based on artifacts preserved by the Smithsonian?
+
+**Q08.** How did astronaut-computer interaction change as spacecraft computing systems developed during the Gemini and Apollo programs?
+
+**Q09.** What technological changes in guidance systems can be observed across Smithsonian artifacts from early automated flight through Gemini and Apollo?
+
+### Level 4 — Evidence Synthesis
+
+**Q10.** What evidence in the Smithsonian collections shows how advances in electronics enabled increasingly sophisticated spacecraft guidance systems during the 1960s?
+
+**Q11.** How did redundancy and backup systems contribute to the safety of Apollo lunar missions?
+
+**Q12.** What Smithsonian objects illustrate the transition from mechanical or analog control systems to digital computing in aviation and spaceflight?
+
+### Level 5 — Cross-Collection Investigation
+
+**Q13.** How did the miniaturization of electronics influence both space exploration and consumer technology in the United States during the second half of the twentieth century?
+
+**Q14.** How did portable technologies change the relationship between people and computing from the space age to everyday consumer life?
+
+**Q15.** What Smithsonian collection evidence illustrates how technologies originally developed for specialized scientific, military, or aerospace purposes became part of everyday American life?
+
+### Capability Coverage
+
+The candidate questions collectively exercise exact and semantic retrieval, metadata filtering, entity-aware retrieval, temporal reasoning, multi-document retrieval, hybrid search, reranking, query decomposition, cross-collection retrieval, evidence aggregation, and claim-level citations.
+
+## 19. Open Questions
 
 ### Product
 
@@ -815,83 +872,96 @@ made.
 
 ------------------------------------------------------------------------
 
-## 19. Current Status
+## 20. Current Status
 
-**Project state:** Planning
+**Project state:** Planning / Dataset Feasibility
 
 ### Completed
 
--   [x] Project motivation defined
--   [x] Portfolio objective defined
--   [x] RAG selected as the core AI architecture
--   [x] Python selected as the implementation language
--   [x] Public-data requirement established
--   [x] Evaluation established as a first-class requirement
--   [x] Codex usage strategy established
--   [x] Living project document established
--   [x] Dataset/domain alternatives investigated
--   [x] Smithsonian Open Access selected
--   [x] Project/repository name selected: `smithsonian-rag`
--   [x] Project language selected: English
--   [x] Source-code license selected: MIT
--   [x] Initial GitHub description selected
+- [x] Project motivation and portfolio objective defined
+- [x] RAG selected as the core AI architecture
+- [x] Python selected as the implementation language
+- [x] Public-data and evaluation requirements established
+- [x] Codex usage strategy and living project document established
+- [x] Smithsonian Open Access selected
+- [x] Project/repository name selected: `smithsonian-rag`
+- [x] Project language selected: English
+- [x] Source-code license selected: MIT
+- [x] Initial GitHub description selected
+- [x] Product use case selected: Smithsonian Collection Investigator
+- [x] V1 collection scope selected: NASM + NMAH
+- [x] Initial set of 15 representative research questions defined
 
 ### In progress
 
--   [ ] Define the concrete product use case
+- [ ] Dataset Feasibility Spike
 
 ### Not started
 
--   [ ] Define initial dataset scope
--   [ ] Define evaluation approach
--   [ ] Make architecture decisions
--   [ ] Define repository implementation structure
--   [ ] Implement baseline ingestion
--   [ ] Implement baseline retrieval
--   [ ] Implement grounded generation
--   [ ] Build evaluation dataset
--   [ ] Evaluate advanced retrieval
--   [ ] Add multimodal capabilities
--   [ ] Production hardening
--   [ ] Deployment
--   [ ] Final portfolio presentation
+- [ ] Validate Q01-Q15 against the actual corpus
+- [ ] Define final V1 corpus specification
+- [ ] Define evaluation approach and ground truth
+- [ ] Make architecture decisions
+- [ ] Define repository implementation structure
+- [ ] Implement baseline ingestion and retrieval
+- [ ] Implement grounded generation
+- [ ] Build evaluation dataset
+- [ ] Evaluate advanced retrieval
+- [ ] Add multimodal capabilities
+- [ ] Production hardening and deployment
+- [ ] Final portfolio presentation
+
 
 ------------------------------------------------------------------------
 
-## 20. Next Step
+## 21. Next Step
 
-### Step 1.1 --- Product Use Case Selection
+### Step 1.3 — Dataset Feasibility Spike
 
-Define the concrete user-facing problem that `smithsonian-rag` will
-solve.
+Inspect the actual Smithsonian Open Access data for NASM and NMAH before designing the ingestion architecture or selecting retrieval infrastructure.
 
-The next analysis should compare a small number of distinct product
-concepts using criteria such as:
+The spike should determine:
 
-1.  RAG depth
-2.  retrieval engineering potential
-3.  multimodal potential
-4.  evaluation feasibility
-5.  backend engineering potential
-6.  portfolio value
-7.  demo clarity
-8.  implementation complexity
-9.  scope control
+1. actual record structure and schema variation
+2. useful metadata fields
+3. textual content richness
+4. identifier structure
+5. people and organization fields
+6. dates and temporal metadata
+7. topics and object types
+8. collection and owning-unit metadata
+9. media availability
+10. rights and reuse metadata
+11. data quality and missing-field patterns
+12. practical corpus size and acquisition strategy
+
+The candidate research questions Q01-Q15 must then be checked against the available data.
+
+For each question, classify it as:
+
+```text
+SUPPORTED
+PARTIALLY_SUPPORTED
+NOT_SUPPORTED
+NEEDS_ADDITIONAL_SOURCE
+```
 
 Expected output:
 
-``` text
-Product concept candidates
-          |
-          v
-Comparison and trade-off analysis
-          |
-          v
-Selected product use case
-          |
-          v
-Use-case decision recorded
-          |
-          v
-Initial dataset scope
+```text
+NASM/NMAH sample data
+        |
+        v
+Schema and data-quality analysis
+        |
+        v
+Q01-Q15 feasibility assessment
+        |
+        v
+V1 corpus specification
+        |
+        v
+Architecture and ingestion design
 ```
+
+No vector database, embedding model, RAG framework, or detailed ingestion architecture should be selected before this feasibility work provides the necessary evidence.
