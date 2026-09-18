@@ -872,7 +872,74 @@ The candidate questions collectively exercise exact and semantic retrieval, meta
 
 ------------------------------------------------------------------------
 
-## 20. Current Status
+## 20. Dataset Feasibility Spike — Preliminary Findings
+
+**Status:** In progress
+
+Preliminary investigation of the Smithsonian Open Access infrastructure and record model supports continuing with the NASM + NMAH scope.
+
+### Data acquisition
+
+- Prefer the Smithsonian Open Access bulk dataset as the primary ingestion source.
+- Use the Open Access API for discovery, sampling, debugging, and targeted record lookup.
+- Treat the historical GitHub OpenAccess repository as documentation/reference rather than the primary production data source.
+
+### Observed source-record structure
+
+Smithsonian records expose multiple metadata layers that should be preserved during normalization:
+
+```text
+record
+├── descriptiveNonRepeating
+├── indexedStructured
+└── freetext
+```
+
+Relevant information may include record identifiers, titles, owning units, data source, dates, people and organizations, places, topics, object types, physical descriptions, identifiers, descriptive notes, media metadata, rights information, and update metadata.
+
+### Architectural implication
+
+The source corpus is not a conventional document-only RAG dataset. The ingestion pipeline must normalize heterogeneous Smithsonian unit metadata into a canonical domain model while preserving the original source record and provenance.
+
+The retrieval design should eventually be able to combine structured metadata constraints with semantic retrieval rather than embedding every field indiscriminately.
+
+### Rights model
+
+Metadata rights and media rights must be modeled separately. A record may expose reusable metadata while associated media has different usage restrictions.
+
+### Update model
+
+The source data is updated over time. V1 does not require incremental ingestion, but the design should avoid preventing a later incremental-update strategy based on record identity and change metadata.
+
+### Preliminary V1 domain slice
+
+The first corpus should focus on a coherent subset spanning computing, electronics, guidance, control, and human-machine interaction from aviation and spaceflight to consumer technology. This connects NASM and NMAH while keeping the initial corpus tractable.
+
+Initial target size for experimentation: approximately **5,000–20,000 records**. This is a working range, not a final requirement.
+
+### Preliminary question feasibility
+
+- Q01–Q03: likely supported
+- Q04–Q06: likely supported
+- Q07–Q09: likely supported
+- Q10–Q12: requires validation of descriptive-text richness
+- Q13–Q14: requires validation of cross-collection evidence
+- Q15: requires careful evidence validation and may require additional sources
+
+These classifications are provisional until tested against actual NASM and NMAH record samples.
+
+### Remaining work for Step 1.3
+
+- acquire representative NASM and NMAH JSON samples
+- perform field-level comparison
+- measure field presence and data-quality patterns
+- define canonical fields and source mappings
+- validate Q01–Q15 against actual records
+- finalize the V1 corpus specification
+
+---
+
+## 21. Current Status
 
 **Project state:** Planning / Dataset Feasibility
 
@@ -894,7 +961,7 @@ The candidate questions collectively exercise exact and semantic retrieval, meta
 
 ### In progress
 
-- [ ] Dataset Feasibility Spike
+- [ ] Dataset Feasibility Spike — sample-record and field-level analysis
 
 ### Not started
 
@@ -914,9 +981,9 @@ The candidate questions collectively exercise exact and semantic retrieval, meta
 
 ------------------------------------------------------------------------
 
-## 21. Next Step
+## 22. Next Step
 
-### Step 1.3 — Dataset Feasibility Spike
+### Step 1.3 — Dataset Feasibility Spike: Sample Record Analysis
 
 Inspect the actual Smithsonian Open Access data for NASM and NMAH before designing the ingestion architecture or selecting retrieval infrastructure.
 
@@ -965,3 +1032,138 @@ Architecture and ingestion design
 ```
 
 No vector database, embedding model, RAG framework, or detailed ingestion architecture should be selected before this feasibility work provides the necessary evidence.
+
+---
+
+## 22. Dataset Feasibility Checkpoint
+
+**Status:** In progress
+
+The initial field-level investigation of real NASM and NMAH records supports the current project direction.
+
+### Confirmed findings
+
+- Smithsonian records require normalization into a canonical domain model rather than direct use of raw JSON as the application model.
+- Structured metadata and semantic text representations should be treated separately.
+- Metadata rights and media rights must be modeled separately.
+- Unit-specific `freetext` labels and identifier conventions require normalization.
+- The original source record and provenance should be preserved.
+- Some useful retrieval attributes, such as flown/unflown status, may exist only in descriptive text and may later justify derived metadata experiments.
+- Q01, Q02, Q06, and Q11 have direct evidence of feasibility in inspected records.
+- Q13 and Q14 remain plausible but require stronger cross-collection evidence.
+- The canonical domain model remains provisional until it is tested against a larger local sample.
+
+### Provisional Canonical Record v0.1
+
+Conceptual fields:
+
+```text
+SmithsonianRecord
+├── record_id
+├── guid
+├── unit_code
+├── data_source
+├── title
+├── description
+├── object_types[]
+├── topics[]
+├── people[]
+├── organizations[]
+├── dates[]
+├── places[]
+├── materials[]
+├── measurements[]
+├── media[]
+├── metadata_rights
+├── source_url
+├── last_updated
+└── raw_source
+```
+
+This is a domain concept, not yet a final Pydantic model or ADR.
+
+### Representation Strategy
+
+A normalized record should produce at least two representations:
+
+1. **Structured metadata representation** for filtering, faceting, exact retrieval, entity constraints, and query routing.
+2. **Semantic text representation** for chunking, embedding, and semantic retrieval.
+
+Raw JSON should not be embedded directly.
+
+### V1 Domain Slice
+
+The current V1 corpus direction is:
+
+> Computing, electronics, guidance, control, and human-machine interaction from aviation and spaceflight to consumer technology.
+
+The initial owning units remain:
+
+- National Air and Space Museum (NASM)
+- National Museum of American History (NMAH)
+
+The provisional target size for the first useful corpus is approximately **5,000–20,000 records**, subject to profiling results.
+
+### Next Implementation Step — Step 1.3.2 Local Dataset Sample
+
+This is the next task when work resumes.
+
+Create a small local sample before implementing the production ingestion pipeline:
+
+```text
+data/
+└── samples/
+    ├── nasm/
+    │   └── 50–100 records
+    └── nmah/
+        └── 50–100 records
+```
+
+Then implement a small Python dataset-profiler utility to inspect the sample and report metrics such as:
+
+- record count
+- title coverage
+- description coverage
+- date coverage
+- name/entity coverage
+- topic coverage
+- object-type coverage
+- materials coverage
+- online-media coverage
+- metadata-rights distribution
+- media-rights distribution
+- unique `freetext` field names/labels
+- schema differences between NASM and NMAH
+- missing-field patterns
+
+### Expected Output
+
+```text
+Local NASM/NMAH sample
+        |
+        v
+Dataset profiler
+        |
+        v
+Field coverage and schema analysis
+        |
+        v
+Refined canonical domain model
+        |
+        v
+V1 corpus specification
+        |
+        v
+Ingestion architecture
+```
+
+### Implementation Constraint
+
+Do not select or implement a vector database, embedding model, RAG framework, or production ingestion architecture yet.
+
+The next code written for the project should be the minimal Python project structure and dataset-profiler tooling. Codex is not required for this step.
+
+### Resume Point
+
+**Resume at: Step 1.3.2 — Local Dataset Sample and Dataset Profiler.**
+
