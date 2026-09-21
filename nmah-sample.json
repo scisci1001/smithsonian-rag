@@ -1,0 +1,106 @@
+﻿{
+    "id":  "ld1-1643399414441-1643399431539-1",
+    "title":  "Stromberg Carlson CRT",
+    "unitCode":  "NMAH",
+    "type":  "edanmdm",
+    "url":  "edanmdm:nmah_1347189",
+    "content":  {
+                    "freetext":  {
+                                     "name":  [
+                                                  {
+                                                      "label":  "maker",
+                                                      "content":  "Stromberg-Carlson"
+                                                  }
+                                              ],
+                                     "notes":  [
+                                                   {
+                                                       "label":  "Location",
+                                                       "content":  "Currently not on view"
+                                                   }
+                                               ],
+                                     "setName":  [
+                                                     {
+                                                         "label":  "See more items in",
+                                                         "content":  "Work and Industry: Electricity"
+                                                     }
+                                                 ],
+                                     "creditLine":  [
+                                                        {
+                                                            "label":  "Credit Line",
+                                                            "content":  "from U.S. Department of Defense, Department of the Navy, Naval Air Development Center"
+                                                        }
+                                                    ],
+                                     "dataSource":  [
+                                                        {
+                                                            "label":  "Data Source",
+                                                            "content":  "National Museum of American History"
+                                                        }
+                                                    ],
+                                     "identifier":  [
+                                                        {
+                                                            "label":  "ID Number",
+                                                            "content":  "1978.0261.01"
+                                                        },
+                                                        {
+                                                            "label":  "catalog number",
+                                                            "content":  "1978.0261.01"
+                                                        },
+                                                        {
+                                                            "label":  "accession number",
+                                                            "content":  "1978.0261"
+                                                        },
+                                                        {
+                                                            "label":  "serial number",
+                                                            "content":  "129"
+                                                        }
+                                                    ],
+                                     "objectType":  [
+                                                        {
+                                                            "label":  "Object Name",
+                                                            "content":  "cathode ray tube"
+                                                        },
+                                                        {
+                                                            "label":  "Object Name",
+                                                            "content":  "tube, x-ray"
+                                                        }
+                                                    ],
+                                     "physicalDescription":  [
+                                                                 {
+                                                                     "label":  "Measurements",
+                                                                     "content":  "overall: 11 1/2 in x 5 1/2 in; 29.21 cm x 13.97 cm"
+                                                                 }
+                                                             ]
+                                 },
+                    "indexedStructured":  {
+                                              "name":  [
+                                                           "Stromberg-Carlson"
+                                                       ],
+                                              "object_type":  [
+                                                                  "tube, x-ray",
+                                                                  "cathode ray tube"
+                                                              ],
+                                              "online_media_type":  [
+                                                                        "Images"
+                                                                    ]
+                                          },
+                    "descriptiveNonRepeating":  {
+                                                    "guid":  "https://n2t.net/ark:/65665/ng49ca746ab-c69c-704b-e053-15f76fa0b4fa",
+                                                    "title":  {
+                                                                  "label":  "Title",
+                                                                  "content":  "Stromberg Carlson CRT"
+                                                              },
+                                                    "record_ID":  "nmah_1347189",
+                                                    "unit_code":  "NMAH",
+                                                    "title_sort":  "STROMBERG CARLSON CRT",
+                                                    "data_source":  "National Museum of American History",
+                                                    "metadata_usage":  {
+                                                                           "access":  "CC0"
+                                                                       }
+                                                }
+                },
+    "hash":  "c68d108ffb67074d5a63a80b36fb4fda023b8995",
+    "docSignature":  "b2518d44cd6def20edd1ca0bbe41408c",
+    "timestamp":  "1663783025",
+    "lastTimeUpdated":  "1732358114",
+    "version":  "1732357748"
+}

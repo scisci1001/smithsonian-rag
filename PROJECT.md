@@ -1280,3 +1280,135 @@ Proceed in this order:
 **Resume at: creating the minimal Python project skeleton and implementing sample acquisition.**
 
 Codex is not required for this step.
+
+---
+
+## 24. API Validation and Sample Records Checkpoint
+
+**Status:** Completed
+
+The Smithsonian Open Access API has been successfully validated with a real API key and real NASM/NMAH responses.
+
+### API Authentication
+
+Use the local environment variable:
+
+```text
+SMITHSONIAN_API_KEY
+```
+
+The real key must remain in `.env` and must never be committed. The repository should commit only `.env.example` with a placeholder. AI-provider credentials remain deferred until the LLM and embedding-provider decisions are made.
+
+### Validated API Response
+
+The Smithsonian search endpoint returned HTTP 200. The observed response envelope contains `status`, `responseCode`, and a `response` object with `rows`, `facets`, `rowCount`, and `message`.
+
+Observed search rows contain full EDAN-style records with:
+
+```text
+record
+├── id
+├── title
+├── unitCode
+├── type
+├── url
+├── content
+│   ├── freetext
+│   ├── indexedStructured
+│   └── descriptiveNonRepeating
+├── hash
+├── docSignature
+├── timestamp
+├── lastTimeUpdated
+└── version
+```
+
+This suggests that sample acquisition can persist search-result records directly without one detail request per record.
+
+### Validated NASM Sample
+
+Example: `Wright XR-2120, Radial 12 Engine, Cutaway` (`nasm_A19710896000`).
+
+The record demonstrates date, manufacturer, summaries, physical descriptions, place, object type, materials, dimensions, structured metadata, online image media, per-media CC0 usage, multiple image resources, and record-level metadata rights.
+
+### Validated NMAH Sample
+
+Example: `Stromberg Carlson CRT` (`nmah_1347189`).
+
+The record demonstrates a lower-case `maker` label, multiple identifier types (`ID Number`, `catalog number`, `accession number`, `serial number`), multiple object types, measurements, structured metadata, and record-level CC0 metadata usage.
+
+### Confirmed Schema Heterogeneity
+
+Real samples confirm that normalization cannot rely on identical `freetext` labels across owning units.
+
+Example:
+
+```text
+NASM: freetext.name[].label = "Manufacturer"
+NMAH: freetext.name[].label = "maker"
+```
+
+Identifier conventions also vary. The profiler must measure label distributions before normalization rules are finalized.
+
+### Media Consistency Check
+
+The profiler should measure cases where `indexedStructured.online_media_type` indicates media but `descriptiveNonRepeating.online_media.media` is absent.
+
+### D-013 — Raw Sample Persistence
+
+**Status:** Accepted
+
+Persist one raw Smithsonian record per JSON file:
+
+```text
+data/samples/
+├── nasm/
+│   ├── nasm_A19710896000.json
+│   └── ...
+└── nmah/
+    ├── nmah_1347189.json
+    └── ...
+```
+
+Use `record_ID` for filenames where available. Do not normalize or semantically transform the stored raw JSON.
+
+### D-014 — Search Results as Sample Source
+
+**Status:** Provisionally Accepted
+
+Use paginated search results as the sample source because observed rows already contain full EDAN-style content. Add per-record detail requests only if later profiling proves that required information is missing.
+
+### Next Step — Implement Sample Downloader
+
+Implement:
+
+```text
+scripts/download_sample.py
+        |
+        ├── load local configuration
+        ├── call Smithsonian Search API
+        ├── retrieve NASM sample
+        ├── retrieve NMAH sample
+        ├── validate response
+        │   ├── successful API response
+        │   ├── expected unit
+        │   └── record_ID present
+        └── persist raw records
+             ├── data/samples/nasm/*.json
+             └── data/samples/nmah/*.json
+```
+
+Initial target:
+
+- 100 NASM records
+- 100 NMAH records
+
+The downloader should be deterministic where the API permits it and fail clearly on authentication, HTTP, response-schema, or filesystem errors. Tests should not require live API calls.
+
+### Resume Point
+
+**Resume at: implementation of `scripts/download_sample.py` and its tests.**
+
+After the 200-record sample is available, implement `dataset_profiler.py` and use measured results to refine the canonical domain model.
+
+Codex is still not required for the next step.

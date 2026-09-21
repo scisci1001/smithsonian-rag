@@ -1,0 +1,199 @@
+﻿{
+    "id":  "ld1-1643400021979-1643400025490-0",
+    "title":  "Wright XR-2120, Radial 12 Engine, Cutaway",
+    "unitCode":  "NASM",
+    "type":  "edanmdm",
+    "url":  "edanmdm:nasm_A19710896000",
+    "content":  {
+                    "freetext":  {
+                                     "date":  [
+                                                  {
+                                                      "label":  "Date",
+                                                      "content":  "Circa 1933"
+                                                  }
+                                              ],
+                                     "name":  [
+                                                  {
+                                                      "label":  "Manufacturer",
+                                                      "content":  "Wright Aeronautical"
+                                                  }
+                                              ],
+                                     "notes":  [
+                                                   {
+                                                       "label":  "Physical Description",
+                                                       "content":  "Type: Reciprocating, 12 cylinders, 2 rows, radial, liquid cooled"
+                                                   },
+                                                   {
+                                                       "label":  "Physical Description",
+                                                       "content":  "Power rating: 746 kW (1,000 hp) at 2,400 rpm"
+                                                   },
+                                                   {
+                                                       "label":  "Physical Description",
+                                                       "content":  "Displacement: 34.7 L (2,120 cu in.)"
+                                                   },
+                                                   {
+                                                       "label":  "Physical Description",
+                                                       "content":  "Bore and Stroke: Not available"
+                                                   },
+                                                   {
+                                                       "label":  "Physical Description",
+                                                       "content":  "Weight: 544 kg (1,200 lb)"
+                                                   },
+                                                   {
+                                                       "label":  "Summary",
+                                                       "content":  "In the early 1930s, the Navy supported Wright development of two new liquid-cooled engines, the XR-2120 (H-2120) and the V-1800. This was part of a \"high-speed development program\" undertaken by the Navy because of concern over the growing superiority of foreign airplanes in top speed, especially as demonstrated in the 1929 Schneider Trophy contest and again in 1931."
+                                                   },
+                                                   {
+                                                       "label":  "Summary",
+                                                       "content":  "First of the two engines and derived from the Curtiss H-1640, it was anticipated that the XR-2120 design, with liquid cooling and enlarged cylinders, would make a good racing engine. The small diameter of the engine, considered important for drag reduction, proved to be difficult to develop due to excessive angularity of the connecting rods and other problems. The Navy withdrew support from the project, primarily because it decided to focus on the development of air-cooled engines. Convinced that the design was mechanically poor, Wright made little effort to persuade the Navy to change its decision and dropped the project."
+                                                   }
+                                               ],
+                                     "place":  [
+                                                   {
+                                                       "label":  "Country of Origin",
+                                                       "content":  "United States of America"
+                                                   }
+                                               ],
+                                     "setName":  [
+                                                     {
+                                                         "label":  "See more items in",
+                                                         "content":  "National Air and Space Museum Collection"
+                                                     }
+                                                 ],
+                                     "creditLine":  [
+                                                        {
+                                                            "label":  "Credit Line",
+                                                            "content":  "Transferred from the U.S. Navy"
+                                                        }
+                                                    ],
+                                     "dataSource":  [
+                                                        {
+                                                            "label":  "Data Source",
+                                                            "content":  "National Air and Space Museum"
+                                                        }
+                                                    ],
+                                     "identifier":  [
+                                                        {
+                                                            "label":  "Inventory Number",
+                                                            "content":  "A19710896000"
+                                                        }
+                                                    ],
+                                     "objectType":  [
+                                                        {
+                                                            "label":  "Type",
+                                                            "content":  "PROPULSION-Reciprocating \u0026 Rotary"
+                                                        }
+                                                    ],
+                                     "objectRights":  [
+                                                          {
+                                                              "label":  "Restrictions \u0026 Rights",
+                                                              "content":  "CC0"
+                                                          }
+                                                      ],
+                                     "physicalDescription":  [
+                                                                 {
+                                                                     "label":  "Materials",
+                                                                     "content":  "Steel, Aluminum, Rubber, Textile, Magnesium, Paint, Stainless Steel"
+                                                                 },
+                                                                 {
+                                                                     "label":  "Dimensions",
+                                                                     "content":  "Approximate: 160 × 167.6 × 147.3cm (63 × 66 × 58 in.)"
+                                                                 },
+                                                                 {
+                                                                     "label":  "Dimensions",
+                                                                     "content":  "Approximate (Weighed with Stand): 694kg (1530lb.)"
+                                                                 },
+                                                                 {
+                                                                     "label":  "Dimensions",
+                                                                     "content":  "Depth 160 cm (63 in.), Length 167.6 cm (66 in.), Width 147.3 cm (58 in.)"
+                                                                 }
+                                                             ]
+                                 },
+                    "indexedStructured":  {
+                                              "name":  [
+                                                           "Wright Aeronautical"
+                                                       ],
+                                              "place":  [
+                                                            "United States of America"
+                                                        ],
+                                              "usage_flag":  [
+                                                                 "Aviation",
+                                                                 "People",
+                                                                 "Piston",
+                                                                 "Propulsion",
+                                                                 "Engines"
+                                                             ],
+                                              "geoLocation":  [
+                                                                  {
+                                                                      "L2":  {
+                                                                                 "type":  "Country",
+                                                                                 "content":  "United States of America"
+                                                                             }
+                                                                  }
+                                                              ],
+                                              "object_type":  [
+                                                                  "Rotary engines",
+                                                                  "Reciprocating (piston) engines",
+                                                                  "Propulsion systems"
+                                                              ],
+                                              "online_media_type":  [
+                                                                        "Images"
+                                                                    ]
+                                          },
+                    "descriptiveNonRepeating":  {
+                                                    "guid":  "http://n2t.net/ark:/65665/nv9b2813763-4d97-4043-ad22-6863d255551e",
+                                                    "title":  {
+                                                                  "label":  "Object Name",
+                                                                  "content":  "Wright XR-2120, Radial 12 Engine, Cutaway"
+                                                              },
+                                                    "record_ID":  "nasm_A19710896000",
+                                                    "unit_code":  "NASM",
+                                                    "title_sort":  "WRIGHT XR-2120, RADIAL 12 ENGINE, CUTAWAY",
+                                                    "data_source":  "National Air and Space Museum",
+                                                    "record_link":  "http://n2t.net/ark:/65665/nv9b2813763-4d97-4043-ad22-6863d255551e",
+                                                    "online_media":  {
+                                                                         "media":  [
+                                                                                       {
+                                                                                           "id":  "media:NASM-A19710896000-NASM2015-02510-000001",
+                                                                                           "guid":  "http://n2t.net/ark:/65665/gf420345dc3-043c-4ca8-9b3b-213846faf361",
+                                                                                           "type":  "Images",
+                                                                                           "idsId":  "NASM-A19710896000-NASM2015-02510-000001",
+                                                                                           "usage":  {
+                                                                                                         "access":  "CC0"
+                                                                                                     },
+                                                                                           "content":  "https://ids.si.edu/ids/deliveryService?id=NASM-A19710896000-NASM2015-02510-000001",
+                                                                                           "thumbnail":  "https://ids.si.edu/ids/deliveryService?id=NASM-A19710896000-NASM2015-02510-000001",
+                                                                                           "altTextAccessibility":  "",
+                                                                                           "extDescrAccessibility":  "Type:  Reciprocating, 12 cylinders, 2 rows, radial, liquid cooled\nPower rating:  746 kW (1,000 hp) at 2,400 rpm\nDisplacement:  34.7 L (2,120 cu in.)\nBore and Stroke:   Not available\nWeight:  544 kg (1,200 lb)",
+                                                                                           "resources":  [
+                                                                                                             {
+                                                                                                                 "label":  "High-resolution JPEG",
+                                                                                                                 "url":  "https://ids.si.edu/ids/download?id=NASM-A19710896000-NASM2015-02510-000001.jpg",
+                                                                                                                 "width":  6600,
+                                                                                                                 "height":  5884,
+                                                                                                                 "dimensions":  "6600x5884"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "label":  "Screen Image",
+                                                                                                                 "url":  "https://ids.si.edu/ids/download?id=NASM-A19710896000-NASM2015-02510-000001_screen"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "label":  "Thumbnail Image",
+                                                                                                                 "url":  "https://ids.si.edu/ids/download?id=NASM-A19710896000-NASM2015-02510-000001_thumb"
+                                                                                                             }
+                                                                                                         ]
+                                                                                       }
+                                                                                   ],
+                                                                         "mediaCount":  1
+                                                                     },
+                                                    "metadata_usage":  {
+                                                                           "access":  "CC0"
+                                                                       }
+                                                }
+                },
+    "hash":  "00d9bae7afa72b67fb0069c0fbf98728f93a383b",
+    "docSignature":  "616d02ea87bccb27cd93e7230eef5f93",
+    "timestamp":  "1663784943",
+    "lastTimeUpdated":  "1769592851",
+    "version":  "1769592613"
+}
