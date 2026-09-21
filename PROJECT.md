@@ -1167,3 +1167,116 @@ The next code written for the project should be the minimal Python project struc
 
 **Resume at: Step 1.3.2 — Local Dataset Sample and Dataset Profiler.**
 
+---
+
+## 23. Implementation Preparation Checkpoint
+
+**Status:** Accepted
+
+The project is ready to begin its first implementation work, deliberately limited to reproducible sample acquisition and deterministic dataset profiling.
+
+### D-010 — Sample Data Acquisition Strategy
+
+**Status:** Accepted
+
+Do not commit generated NASM/NMAH sample records to the repository. Provide a reproducible acquisition script and exclude generated sample JSON from Git.
+
+Initial target:
+
+- 100 NASM records
+- 100 NMAH records
+
+The sample should not be manually curated only for interesting or complete records. It must expose missing fields, schema differences, unusual labels, rights variations, and other data-quality issues.
+
+### D-011 — Dataset Profiler Scope
+
+**Status:** Accepted
+
+The first analysis tool will be a deterministic Python dataset profiler with no LLM, embeddings, vector search, or other AI components.
+
+Initial outputs should include:
+
+- total record count and count by owning unit
+- title, description, date, name/entity, topic, object-type, and materials coverage
+- online-media coverage and media-type distribution
+- metadata-rights and media-rights distributions
+- unique `freetext` field names and labels
+- NASM/NMAH schema and label differences
+- missing-field patterns
+
+The profiler should produce both human-readable console output and machine-readable JSON output.
+
+### D-012 — Initial Dependency Policy
+
+**Status:** Accepted
+
+Keep the first implementation dependency-light. Use the Python standard library where practical.
+
+Initial development dependency:
+
+- pytest
+
+Do not add pandas or other data-processing libraries without a concrete requirement.
+
+### Initial Repository Structure
+
+```text
+smithsonian-rag/
+├── README.md
+├── PROJECT.md
+├── LICENSE
+├── .gitignore
+├── pyproject.toml
+├── data/
+│   └── samples/
+│       └── .gitkeep
+├── scripts/
+│   └── download_sample.py
+├── src/
+│   └── smithsonian_rag/
+│       ├── __init__.py
+│       └── profiling/
+│           ├── __init__.py
+│           └── dataset_profiler.py
+└── tests/
+    └── profiling/
+        └── test_dataset_profiler.py
+```
+
+This structure is intentionally minimal. Do not create speculative packages for APIs, vector stores, embeddings, LLMs, retrieval, or multimodal processing yet.
+
+### Deferred Components
+
+The following remain out of scope for the next implementation step:
+
+- canonical Pydantic domain model
+- production normalizer
+- embeddings and chunking
+- vector database and PostgreSQL
+- FastAPI
+- LangChain or LlamaIndex
+- LLM integration
+- multimodal embeddings
+- Docker
+- production ingestion pipeline
+
+### Next Step — Step 1.3.2 Implementation
+
+Proceed in this order:
+
+1. create the minimal Python project skeleton
+2. configure `pyproject.toml`
+3. configure `.gitignore` for generated sample data
+4. implement reproducible Smithsonian sample acquisition
+5. acquire approximately 100 NASM and 100 NMAH records
+6. implement the deterministic dataset profiler
+7. add unit tests for profiler behavior
+8. generate the first dataset profile
+9. use measured results to refine the canonical domain model
+10. finalize the V1 corpus specification
+
+### Resume Point
+
+**Resume at: creating the minimal Python project skeleton and implementing sample acquisition.**
+
+Codex is not required for this step.
