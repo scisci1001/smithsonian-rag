@@ -1412,3 +1412,141 @@ The downloader should be deterministic where the API permits it and fail clearly
 After the 200-record sample is available, implement `dataset_profiler.py` and use measured results to refine the canonical domain model.
 
 Codex is still not required for the next step.
+
+---
+
+## 25. Sample Acquisition Implementation Checkpoint
+
+**Status:** Completed
+
+The first implementation milestone has been successfully executed locally.
+
+### Python Runtime
+
+**Decision:** Use Python 3.13 for this project.
+
+The local machine exposes Python 3.13 through the `p313` command. IntelliJ uses the project virtual-environment interpreter directly:
+
+```text
+<project-root>/.venv/Scripts/python.exe
+```
+
+The project metadata should declare `requires-python = ">=3.13"`.
+
+### Test Status
+
+The downloader unit-test suite is green:
+
+```text
+9 passed
+```
+
+Tests run successfully from the command line and IntelliJ.
+
+### Local Secret Strategy
+
+Local development uses `.env` with `SMITHSONIAN_API_KEY`. The real `.env` is excluded from Git; `.env.example` contains only a placeholder.
+
+An already-defined process environment variable has priority over the value loaded by `load_dotenv()`. For normal local development, avoid defining the key redundantly in PowerShell or IntelliJ and use `.env` as the single local source.
+
+### Sample Acquisition Result
+
+The downloader successfully retrieved:
+
+- 100 NASM records
+- 100 NMAH records
+
+Total: **200 raw Smithsonian records**. Generated records remain excluded from Git.
+
+### D-015 — Working-Directory Independent Defaults
+
+**Status:** Accepted
+
+Default project paths must not depend on the process current working directory.
+
+Observed issue:
+
+- PowerShell from repository root wrote to `data/samples`
+- IntelliJ with `scripts` as working directory wrote to `scripts/data/samples`
+
+Repository-controlled defaults must be derived from the script location:
+
+```python
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "data" / "samples"
+ENV_FILE = PROJECT_ROOT / ".env"
+```
+
+Load `.env` explicitly from `ENV_FILE`.
+
+This makes default behavior stable from PowerShell, IntelliJ, tests, and future CI.
+
+An explicitly supplied `--output` path may remain relative to the caller's current working directory.
+
+### IntelliJ Configuration
+
+Recommended configuration:
+
+```text
+Python SDK:
+<project-root>/.venv/Scripts/python.exe
+
+pytest working directory:
+$PROJECT_DIR$
+
+download_sample.py working directory:
+$PROJECT_DIR$
+```
+
+The code must still behave correctly when the working directory differs.
+
+### Downloader Improvement Backlog
+
+Non-blocking improvement:
+
+- include useful Smithsonian API error-body information such as `API_KEY_INVALID` when HTTP errors occur, without exposing secrets
+
+### Next Step — Dataset Profiler
+
+Implement:
+
+```text
+src/smithsonian_rag/profiling/dataset_profiler.py
+```
+
+The profiler will analyze the 200 local raw records and produce:
+
+1. human-readable console output
+2. machine-readable JSON output
+
+Initial measurements:
+
+- total record count
+- records by owning unit
+- title coverage
+- description coverage
+- date coverage
+- name/entity coverage
+- topic coverage
+- object-type coverage
+- place coverage
+- materials coverage
+- declared online-media coverage
+- actual `online_media.media` coverage
+- declared-media vs actual-media mismatch
+- media-type distribution
+- metadata-rights distribution
+- media-rights distribution
+- `freetext` category distribution
+- `freetext` label distribution
+- identifier-label distribution
+- NASM/NMAH schema differences
+- missing-field patterns
+
+No normalization rules should be finalized until these measurements are available.
+
+### Resume Point
+
+**Resume at: implementation of `dataset_profiler.py` and its unit tests using the 200-record local NASM/NMAH sample.**
