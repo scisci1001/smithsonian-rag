@@ -1474,7 +1474,7 @@ Repository-controlled defaults must be derived from the script location:
 ```text
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "data" / "samples"
 ENV_FILE = PROJECT_ROOT / ".env"
 ```
