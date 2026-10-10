@@ -8,7 +8,7 @@
 search and grounded question answering over Smithsonian Open Access
 collections.
 
-**Project status:** Planning
+**Project status:** Data feasibility completed for the initial sample; canonical model and corpus selection in progress
 
 The project is a portfolio-grade Retrieval-Augmented Generation (RAG)
 system built on public Smithsonian Open Access collection data.
@@ -247,7 +247,7 @@ explicitly marked otherwise.
 
 ### Language
 
--   Python 3.12+
+-   Python 3.13+
 
 ### Development environment
 
@@ -874,7 +874,7 @@ The candidate questions collectively exercise exact and semantic retrieval, meta
 
 ## 20. Dataset Feasibility Spike — Preliminary Findings
 
-**Status:** In progress
+**Status:** Completed for initial sample; broader representativeness remains open
 
 Preliminary investigation of the Smithsonian Open Access infrastructure and record model supports continuing with the NASM + NMAH scope.
 
@@ -939,7 +939,7 @@ These classifications are provisional until tested against actual NASM and NMAH 
 
 ---
 
-## 21. Current Status
+## 21. Historical Status (Superseded)
 
 **Project state:** Planning / Dataset Feasibility
 
@@ -981,7 +981,7 @@ These classifications are provisional until tested against actual NASM and NMAH 
 
 ------------------------------------------------------------------------
 
-## 22. Next Step
+## 22. Historical Next Step (Superseded)
 
 ### Step 1.3 — Dataset Feasibility Spike: Sample Record Analysis
 
@@ -1035,7 +1035,7 @@ No vector database, embedding model, RAG framework, or detailed ingestion archit
 
 ---
 
-## 22. Dataset Feasibility Checkpoint
+## 22A. Dataset Feasibility Checkpoint (Historical)
 
 **Status:** In progress
 
@@ -1471,10 +1471,10 @@ Observed issue:
 
 Repository-controlled defaults must be derived from the script location:
 
-```python
+```text
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "data" / "samples"
 ENV_FILE = PROJECT_ROOT / ".env"
 ```
@@ -1550,3 +1550,128 @@ No normalization rules should be finalized until these measurements are availabl
 ### Resume Point
 
 **Resume at: implementation of `dataset_profiler.py` and its unit tests using the 200-record local NASM/NMAH sample.**
+
+---
+
+## 26. Dataset Profiler and Detail API Investigation — October 2026
+
+**Status:** Completed for the initial 200-record sample
+
+### Implemented tools
+
+- `scripts/download_sample.py`: retrieves raw Smithsonian EDAN search records.
+- `src/smithsonian_rag/profiling/dataset_profiler.py`: deterministic field-coverage and schema profiling with JSON and console reports.
+- `scripts/inspect_record.py`: compares locally saved search records with the corresponding Content API records.
+- Unit tests for downloader, profiler, and inspector logic. The profiler was refactored to reduce cognitive complexity, and its regression tests were retained.
+
+The project uses Python 3.13, IntelliJ IDEA with a project `.venv`, `pytest`, and a locally ignored `.env` for the Smithsonian API key. In the user's PowerShell environment, `p313` invokes Python 3.13; IntelliJ uses `.venv/Scripts/python.exe`.
+
+### Profiler v0.2 — observed sample statistics
+
+The sample comprises 100 NASM and 100 NMAH records, with **0 duplicate record IDs**.
+
+| Metric | NASM | NMAH |
+|---|---:|---:|
+| Title | 100% | 100% |
+| Narrative description | 74% | 10% |
+| Physical description | 100% | 97% |
+| Any recognized semantic text | 100% | 97% |
+| Date | 79% | 28% |
+| Name | 89% | 27% |
+| Topic | 41% | 5% |
+| Object type | 100% | 100% |
+| Declared media | 100% | 85% |
+| Actual embedded media list | 100% | 0% |
+| Declared media without embedded media list | 0% | 85% |
+
+**Interpretation:** NMAH's high semantic-text coverage mostly reflects physical descriptions, not explanatory narrative content. A text-presence check alone is not sufficient for RAG evidence quality. The legacy `description` metric remains for compatibility, while `narrative_description`, `physical_description`, and `total_semantic_text` distinguish content types.
+
+**Sampling limitation:** These are convenience samples taken from ID-sorted API results, not representative random samples. Do not extrapolate percentages to either entire museum collection.
+
+### Schema findings
+
+- NASM and NMAH use different labels for comparable fields, including `Manufacturer` versus `maker` / `manufacturer`.
+- NMAH identifier labels include `ID Number`, `catalog number`, `accession number`, and sometimes `serial number`; NASM sample records use `Inventory Number`.
+- Rights must be retained separately for record metadata and individual media assets.
+- Search-result EDAN records include structured metadata, freetext, and descriptive non-repeating sections.
+- Raw source data must be preserved independently of derived structured metadata and semantic text.
+
+### Detail API investigation
+
+The first inspector request returned HTTP 404 when calling the Content API with a bare `record_ID`. Using the search record's EDAN URL identifier (for example `edanmdm:nmah_1203284`) succeeded.
+
+Three NMAH records were compared:
+
+| Record | Extra text entries in detail | Extra media assets in detail | New freetext labels |
+|---|---:|---:|---:|
+| `nmah_1203284` | 0 | 0 | 0 |
+| `nmah_1203285` | 0 | 0 | 0 |
+| `nmah_1203286` | 0 | 0 | 0 |
+
+The inspector compares selected summary fields, not a complete raw-JSON diff. All three records declared images but contained zero actual media assets in both search and detail representations.
+
+### D-016 — Detail API Enrichment Strategy
+
+**Status:** Accepted for V1 baseline
+
+**Decision:** Use search-result records as the baseline ingestion input. Do not add a mandatory per-record Content API enrichment request.
+
+**Evidence:** Three targeted NMAH detail requests produced no additional text entries, media assets, or freetext labels under the current comparison.
+
+**Limitation:** This is not evidence that detail requests never add value for other records.
+
+**Revisit if:** Broader, more diverse samples reveal meaningful additional data or a future feature requires it.
+
+### Remaining data risks
+
+- The reason for NMAH's declared-media/embedded-media discrepancy is not yet established.
+- The selected 100+100 sample may be biased by ID ordering and subject matter.
+- Historical or causal cross-collection questions Q13–Q15 require stronger source evidence.
+- A full field-level JSON diff and alternative media sources may be investigated if justified, but are not prerequisites for the baseline model.
+
+## 27. Current Status — Authoritative
+
+**Project state:** Initial data profiling completed; canonical modeling and corpus definition next.
+
+### Completed
+
+- [x] Project goal, repository name, use case, language, and MIT source-code license
+- [x] NASM + NMAH selected as initial owning units
+- [x] 15 candidate research questions drafted
+- [x] Minimal Python 3.13 project skeleton and local secret configuration
+- [x] Smithsonian Search API authentication validated
+- [x] 100 NASM and 100 NMAH raw records downloaded locally
+- [x] Dataset profiler implemented, tested, and refactored
+- [x] Profiler v0.2 generated and analyzed
+- [x] NMAH media discrepancy identified and quantified in the sample
+- [x] Content API identifier issue diagnosed and corrected
+- [x] Three NMAH search/detail comparisons completed
+- [x] D-016 baseline detail-enrichment decision recorded
+
+### In progress / open
+
+- [ ] Design canonical `SmithsonianRecord` v0.1 and unit-specific mapping rules
+- [ ] Define narrative versus physical evidence representations
+- [ ] Select a coherent, measurable V1 corpus slice and sampling strategy
+- [ ] Validate the representative research questions against the selected corpus
+- [ ] Investigate NMAH media access further only if required for V1
+- [ ] Select embedding model, LLM, retrieval storage, and RAG framework based on requirements
+
+### Not started
+
+- [ ] Production normalizer and ingestion pipeline
+- [ ] Chunking, indexing, retrieval, and grounded generation
+- [ ] Ground-truth evaluation dataset and retrieval experiments
+- [ ] Multimodal retrieval, operational hardening, and deployment
+
+## 28. Next Step — Step 1.4
+
+### Canonical Domain Model and V1 Corpus Selection
+
+**First deliverable:** Design a canonical record model from the observed EDAN schemas, preserving source identity, provenance, structured metadata, distinct narrative/physical text, record-level rights, and per-media rights.
+
+**Second deliverable:** Specify the initial computing/electronics/guidance/human-machine-interaction corpus, including inclusion criteria, quality thresholds, sampling method, and a plan to validate Q01–Q15.
+
+Do not implement embeddings, vector storage, or LLM-based enrichment until the model and corpus criteria are reviewed.
+
+**Resume point:** Review canonical field definitions and NASM/NMAH mapping rules, then decide V1 corpus inclusion criteria.

@@ -98,11 +98,13 @@ def test_validate_unit_accepts_expected_unit() -> None:
 
 
 def test_validate_unit_rejects_wrong_unit() -> None:
+    record = sample_record(unit_code="NMAH")
+
     with pytest.raises(
             SmithsonianApiError,
             match="Expected unit",
     ):
-        validate_unit(sample_record(unit_code="NMAH"), "NASM")
+        validate_unit(record, "NASM")
 
 
 def test_write_record_preserves_raw_record(tmp_path: Path) -> None:
