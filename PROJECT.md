@@ -8,7 +8,7 @@
 search and grounded question answering over Smithsonian Open Access
 collections.
 
-**Project status:** Data feasibility completed for the initial sample; canonical model and corpus selection in progress
+**Project status:** Canonical domain model v0.1 accepted; implementation next
 
 The project is a portfolio-grade Retrieval-Augmented Generation (RAG)
 system built on public Smithsonian Open Access collection data.
@@ -1631,7 +1631,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 27. Current Status — Authoritative
 
-**Project state:** Initial data profiling completed; canonical modeling and corpus definition next.
+**Project state:** Canonical domain model v0.1 accepted; deterministic normalization implementation next.
 
 ### Completed
 
@@ -1650,7 +1650,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ### In progress / open
 
-- [ ] Design canonical `SmithsonianRecord` v0.1 and unit-specific mapping rules
+- [x] Accept canonical `SmithsonianRecord` v0.1 conceptual schema
+- [ ] Implement and validate unit-specific NASM/NMAH mapping rules
 - [ ] Define narrative versus physical evidence representations
 - [ ] Select a coherent, measurable V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
@@ -1674,4 +1675,59 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 Do not implement embeddings, vector storage, or LLM-based enrichment until the model and corpus criteria are reviewed.
 
-**Resume point:** Review canonical field definitions and NASM/NMAH mapping rules, then decide V1 corpus inclusion criteria.
+**Resume point:** Implement the accepted Pydantic domain models and deterministic NASM/NMAH normalization; then define V1 corpus inclusion criteria.
+
+
+---
+
+## 29. Canonical Domain Model v0.1 — Accepted Decision
+
+### D-017 — Canonical Domain Model
+
+**Status:** Accepted (design; implementation pending)
+
+**Decision:** Represent heterogeneous NASM and NMAH EDAN records using explicit Pydantic domain models and deterministic, unit-aware normalization. Preserve source identity, provenance, original source field labels, and separate narrative from physical evidence. No LLM extraction in the baseline normalizer.
+
+### Accepted canonical fields
+
+| Field | Type | Requirement |
+|---|---|---|
+| `record_id` | `str` | Required non-empty |
+| `unit_code` | `str` | Required non-empty |
+| `title` | `str` | Required non-empty |
+| `guid` | `str \| None` | Optional |
+| `source_url` | `str \| None` | Optional; citation link where available |
+| `narrative_texts` | `list[TextEntry]` | Always present, possibly empty |
+| `physical_descriptions` | `list[TextEntry]` | Always present, possibly empty |
+| `object_types` | `list[str]` | Always present, possibly empty |
+| `topics` | `list[str]` | Always present, possibly empty |
+| `entities` | `list[Entity]` | Always present, possibly empty |
+| `dates` | `list[DateValue]` | Always present, possibly empty |
+| `places` | `list[str]` | Always present, possibly empty |
+| `identifiers` | `list[Identifier]` | Always present, possibly empty |
+| `media` | `list[MediaAsset]` | Always present, possibly empty |
+| `metadata_rights` | `RightsInfo` | Required; unknown status must be representable |
+| `source_metadata` | `SourceMetadata` | Required; provenance and change information |
+
+`TextEntry` preserves `category`, `label`, and `content`. Normalization retains distinct identifiers and entity roles, avoids inventing exact dates from approximate date strings, and models media usage rights separately from metadata rights.
+
+The original raw EDAN record remains available in the raw-data storage layer rather than being copied into every canonical domain object. Structured metadata and semantic text are separate downstream representations.
+
+### Implementation conventions
+
+- Python 3.13; IntelliJ uses the local `.venv` interpreter. The `p313` command selects Python 3.13 in the user's PowerShell environment.
+- Add Pydantic as an explicit dependency when implementing the model.
+- Place models under `src/smithsonian_rag/domain/` and normalization under `src/smithsonian_rag/normalization/`.
+- Keep normalization deterministic and testable with offline NASM/NMAH fixtures.
+- Keep all repository code, tests, comments, documentation, and user-facing text in English.
+- Do not commit `.env` or downloaded raw samples.
+
+### Current next step — Step 1.4.1
+
+1. Implement `SmithsonianRecord` and supporting Pydantic models.
+2. Implement deterministic NASM and NMAH field mapping.
+3. Test required-field validation, missing optional fields, text classification, identifiers, rights, and provenance.
+4. Run the complete regression suite.
+5. Next, specify V1 corpus selection and validate research questions Q01–Q15 against the selected records.
+
+**Not yet decided:** final corpus inclusion thresholds, embedding/LLM providers, vector storage, and RAG framework.
