@@ -1651,8 +1651,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 ### In progress / open
 
 - [x] Accept canonical `SmithsonianRecord` v0.1 conceptual schema
-- [ ] Implement and validate unit-specific NASM/NMAH mapping rules
-- [ ] Define narrative versus physical evidence representations
+- [x] Implement and validate unit-specific NASM/NMAH mapping rules
+- [x] Define narrative versus physical evidence representations
 - [ ] Select a coherent, measurable V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
@@ -1675,7 +1675,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 Do not implement embeddings, vector storage, or LLM-based enrichment until the model and corpus criteria are reviewed.
 
-**Resume point:** Implement the accepted Pydantic domain models and deterministic NASM/NMAH normalization; then define V1 corpus inclusion criteria.
+**Historical resume point (completed):** Implement the accepted Pydantic domain models and deterministic NASM/NMAH normalization; then define V1 corpus inclusion criteria.
 
 
 ---
@@ -1684,7 +1684,7 @@ Do not implement embeddings, vector storage, or LLM-based enrichment until the m
 
 ### D-017 — Canonical Domain Model
 
-**Status:** Accepted (design; implementation pending)
+**Status:** Accepted and implemented (v0.1)
 
 **Decision:** Represent heterogeneous NASM and NMAH EDAN records using explicit Pydantic domain models and deterministic, unit-aware normalization. Preserve source identity, provenance, original source field labels, and separate narrative from physical evidence. No LLM extraction in the baseline normalizer.
 
@@ -1731,3 +1731,84 @@ The original raw EDAN record remains available in the raw-data storage layer rat
 5. Next, specify V1 corpus selection and validate research questions Q01–Q15 against the selected records.
 
 **Not yet decided:** final corpus inclusion thresholds, embedding/LLM providers, vector storage, and RAG framework.
+
+
+---
+
+## 30. Canonical Normalization Implementation and Validation
+
+**Status:** Completed — Step 1.4.1 and Step 1.4.2
+
+### Implemented
+
+- Pydantic-based `SmithsonianRecord` and supporting domain models.
+- Deterministic, unit-aware NASM and NMAH normalizers.
+- Offline unit tests for canonical models and normalization.
+- A batch normalization validator under `src/smithsonian_rag/validation/normalization_validator.py`, with offline tests.
+- Machine-readable validation report at `build/normalization-validation.json` (generated locally, not committed).
+
+A minor JSON serialization defect in the validation CLI was corrected: the output now ends with a real newline character (`"\\n"` in Python source), rather than a literal backslash followed by `n`. The report was regenerated successfully.
+
+### Validation results — 200-record local sample
+
+| Metric | Result |
+|---|---:|
+| Total input records | 200 |
+| Successfully normalized | 200 |
+| Failed normalization | 0 |
+| NASM normalized | 100 / 100 |
+| NMAH normalized | 100 / 100 |
+
+Canonical field presence by owning unit:
+
+| Canonical field | NASM | NMAH |
+|---|---:|---:|
+| Narrative text | 74 / 100 | 10 / 100 |
+| Physical descriptions | 100 / 100 | 97 / 100 |
+| Entities | 89 / 100 | 27 / 100 |
+| Dates | 79 / 100 | 28 / 100 |
+| Topics | 41 / 100 | 5 / 100 |
+| Media assets | 100 / 100 | 0 / 100 |
+
+**Interpretation:** All 200 sampled records satisfy the implemented normalization contract. The original differences in narrative richness and media availability persist in the canonical representation. This is a successful integration check, not proof of semantic correctness for every mapped field or representativeness of the full museum collections.
+
+### D-018 — Normalization Validation Gate
+
+**Status:** Accepted for the current baseline
+
+Use offline unit tests and a batch validation report as separate quality checks:
+
+- Unit tests verify deterministic mapping and model contracts.
+- Batch validation measures conversion success, failure diagnostics, and canonical field coverage.
+- Do not silently drop invalid records; report their IDs, units, and validation errors.
+- Do not treat normalization success alone as a measure of retrieval usefulness.
+
+The 200-record convenience sample has **zero failures**, but the gate must be reassessed when corpus selection expands to new records and subject areas.
+
+## 31. Current Next Step — Step 1.4.3 V1 Corpus Selection Strategy
+
+**Status:** Next
+
+Define a deterministic, measurable selection policy for the initial corpus, with explicit attention to the computing, electronics, guidance, control, and human-machine interaction domain across NASM and NMAH.
+
+### Decisions to make
+
+1. Select candidate topics and source queries for each owning unit.
+2. Specify inclusion/exclusion rules based on canonical fields and evidence quality.
+3. Distinguish records with narrative evidence from those containing only physical or structured descriptions.
+4. Define a minimum text-quality threshold and justify it using measured data rather than arbitrary assumptions.
+5. Define a sampling approach beyond the current ID-sorted convenience sample.
+6. Specify how missing media is represented without assuming images are unavailable.
+7. Check answerability of Q01–Q15 against the selected corpus before finalizing the initial corpus size.
+
+### Proposed implementation sequence
+
+1. Draft the selection policy and measurable acceptance criteria.
+2. Implement a deterministic corpus-selection evaluator with unit tests.
+3. Run it on the existing 200 canonical records and inspect exclusions.
+4. Refine the policy, then test it against a more diverse sample.
+5. Only then decide whether the provisional 5,000–20,000 record target is appropriate.
+
+**Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
+
+**Resume point:** Step 1.4.3 — design and validate the V1 corpus-selection rules.
