@@ -23,7 +23,7 @@ def test_narrative_domain_record_is_accepted_with_reasons() -> None:
     assert result.evidence_class is EvidenceClass.NARRATIVE
     assert result.matched_domains == ["computing", "guidance"]
     assert result.reason_codes == [ReasonCode.DOMAIN_MATCH, ReasonCode.NARRATIVE_EVIDENCE]
-    assert result.policy_version == "0.2"
+    assert result.policy_version == "0.3"
     assert {match.term for match in result.matched_terms} == {"computer", "guidance"}
 
 
@@ -62,6 +62,20 @@ def test_automatic_pilot_synonym_matches_guidance() -> None:
     assert {match.term for match in result.matched_terms} >= {"automatic pilot", "autopilots"}
 
 
+def test_separated_auto_pilot_variant_matches_guidance() -> None:
+    item = record(
+        "nasm_auto_pilot",
+        title="Wiley Post aircraft",
+        narrative_texts=[TextEntry(category="notes", label="Summary", content="An auto pilot was installed.")],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is True
+    assert result.matched_domains == ["guidance"]
+    assert any(match.term == "auto pilot" for match in result.matched_terms)
+
+
 def test_radar_and_radio_equipment_match_electronics() -> None:
     item = record(
         "nasm_radar",
@@ -77,7 +91,41 @@ def test_radar_and_radio_equipment_match_electronics() -> None:
     assert any(match.term == "radar" and match.field == "narrative_texts" for match in result.matched_terms)
 
 
-def test_directional_gyro_and_navigational_instruments_match_guidance() -> None:
+def test_radio_receiver_matches_electronics_with_its_source_field() -> None:
+    item = record(
+        "nasm_receiver",
+        title="Western Wireless Type 7 Receiver",
+        object_types=["Communication systems", "Avionics"],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is True
+    assert "electronics" in result.matched_domains
+    assert any(
+        match.term == "receiver" and match.field == "title"
+        for match in result.matched_terms
+    )
+
+
+def test_instrument_panel_matches_control_and_is_explainable() -> None:
+    item = record(
+        "nasm_test_panel",
+        title="Experimental aircraft",
+        narrative_texts=[TextEntry(category="notes", label="Summary", content="An instrument panel was added to record flight-test data.")],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is True
+    assert "control" in result.matched_domains
+    assert any(
+        match.term == "instrument panel" and match.field == "narrative_texts"
+        for match in result.matched_terms
+    )
+
+
+def test_directional_gyro_matches_guidance_with_navigational_object_type() -> None:
     item = record(
         "nasm_gyro",
         title="Directional Gyro",
@@ -90,6 +138,45 @@ def test_directional_gyro_and_navigational_instruments_match_guidance() -> None:
     assert result.accepted is True
     assert "guidance" in result.matched_domains
     assert result.evidence_class is EvidenceClass.STRUCTURED
+
+
+def test_generic_navigational_object_type_does_not_select_signal_flare() -> None:
+    item = record(
+        "nasm_A19360009000",
+        title="Flare, Drift, NC-3",
+        object_types=["Navigational instruments"],
+        narrative_texts=[TextEntry(
+            category="notes",
+            label="Summary",
+            content="Aircrew used surface flares to signal their position to rescuers.",
+        )],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is False
+    assert result.matched_domains == []
+    assert result.reason_codes == [ReasonCode.OUT_OF_DOMAIN]
+
+
+def test_specific_compass_and_drift_meter_artifacts_match_guidance() -> None:
+    compass = record(
+        "nasm_compass",
+        title="Aperiodic Compass",
+        object_types=["Navigational instruments"],
+    )
+    drift_meter = record(
+        "nasm_drift_meter",
+        title="Drift Meter, B-3",
+        object_types=["Navigational instruments"],
+    )
+
+    results = [CorpusSelector().select(item) for item in (compass, drift_meter)]
+
+    assert all(result.accepted for result in results)
+    assert all(result.matched_domains == ["guidance"] for result in results)
+    assert any(match.term == "compass" for match in results[0].matched_terms)
+    assert any(match.term == "drift meter" for match in results[1].matched_terms)
 
 
 def test_navigation_topic_alone_does_not_select_a_pendulum_clock() -> None:

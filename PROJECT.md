@@ -8,7 +8,7 @@
 search and grounded question answering over Smithsonian Open Access
 collections.
 
-**Project status:** Corpus Selection Policy v0.2 implemented and evaluated on 200 local records; manual review of all 29 accepted matches completed, with one clear false positive identified
+**Project status:** Corpus Selection Policy v0.3 implemented and evaluated on 200 local records; manual review identified and corrected one v0.2 false positive
 
 The project is a portfolio-grade Retrieval-Augmented Generation (RAG)
 system built on public Smithsonian Open Access collection data.
@@ -1631,7 +1631,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 27. Current Status — Authoritative
 
-**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.2 implemented and evaluated on 200 local records; manual review of all 29 accepted matches completed, with one clear false positive identified.
+**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.3 implemented and evaluated on 200 local records; the v0.2 false positive identified in manual review is corrected.
 
 ### Completed
 
@@ -1649,6 +1649,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] D-016 baseline detail-enrichment decision recorded
 - [x] D-019 Corpus Selection Policy v0.2 implemented with matched-term provenance and positive regression tests
 - [x] Selection policy v0.2 evaluated on all 200 local NASM/NMAH records
+- [x] D-019 v0.3 removes unsupported generic navigational-instrument type matching and adds a negative flare regression case
+- [x] Selection policy v0.3 evaluated on all 200 local NASM/NMAH records
 
 ### In progress / open
 
@@ -1656,7 +1658,9 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Implement and validate unit-specific NASM/NMAH mapping rules
 - [x] Define narrative versus physical evidence representations
 - [x] Complete manual precision review of all 29 v0.2 matches; one clear false positive and unresolved scope questions documented
+- [x] Correct the false positive and verify the revised policy on the same 200 records
 - [ ] Review plausible v0.2 false negatives; then finalize a coherent V1 corpus slice and sampling strategy
+- [ ] Decide whether V1 includes contextual aircraft/platform records and review the G-meter domain assignment
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
 - [ ] Select embedding model, LLM, retrieval storage, and RAG framework based on requirements
@@ -1670,7 +1674,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 28. Step 1.4 — Canonical Domain Model and V1 Corpus Selection
 
-**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.2 implemented and evaluated on the existing 200-record sample. Manual precision review of all 29 accepted matches is complete; corpus criteria remain provisional pending scope decisions and false-negative review.
+**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.3 implemented and evaluated on the existing 200-record sample. Manual review of the 29 v0.2 accepted matches is complete; corpus criteria remain provisional pending scope decisions and false-negative review.
 
 The canonical record model preserves source identity, provenance, structured metadata, distinct narrative and physical text, record-level rights, and per-media rights. The initial V1 domain spans computing, electronics, guidance, control, and human-machine interaction across NASM and NMAH.
 
@@ -1782,13 +1786,13 @@ Use offline unit tests and a batch validation report as separate quality checks:
 
 The 200-record convenience sample has **zero failures**, but the gate must be reassessed when corpus selection expands to new records and subject areas.
 
-## 31. Step 1.4.3 — Corpus Selection Policy v0.2 and Initial Evaluation
+## 31. Step 1.4.3 — Corpus Selection Policy v0.2 Evaluation and v0.3 Correction
 
-**Status:** Policy v0.2 implemented and evaluated on the 200-record convenience sample. Manual review of all 29 accepted matches is complete; final corpus criteria remain provisional pending scope decisions and false-negative review.
+**Status:** Policy v0.3 is implemented and evaluated on the 200-record convenience sample. The 29 v0.2 accepted matches were reviewed manually; the clear false positive is corrected. Final corpus criteria remain provisional pending scope decisions and false-negative review.
 
 ### D-019 — Corpus Selection Policy
 
-**Status:** Implemented; v0.2 is the current baseline for evaluation.
+**Status:** Implemented; v0.3 is the current policy version. The v0.2 metrics below are retained as the initial evaluation baseline.
 
 The policy is deterministic, versioned, and unit-aware. It applies field-specific terms to the canonical title, topics, object types, narrative texts, physical descriptions, and entity names. NASM and NMAH use the same vocabulary and have separate metrics. Decisions record the policy version, matched domains, exact matched term and canonical field, evidence class, and reason codes.
 
@@ -1805,7 +1809,7 @@ A record is accepted only when it matches a domain and has A or B evidence. Ther
 The review of the eight v0.1 matches found no clear false positives, while inspection of excluded records identified likely missed aviation and electronics evidence. The vocabulary was refined to cover:
 
 - Autopilot spellings `autopilot`, `automatic pilot`, and `auto pilot`.
-- Directional gyros, gyroscopes, radio and magnetic compasses, navigational instruments, flight instruments, inclinometers, accelerometers, drift meters, and astrodromes in suitable fields.
+- Directional gyros, gyroscopes, radio and magnetic compasses, specific compass and drift-meter artifacts, flight instruments, inclinometers, accelerometers, and astrodromes in suitable fields.
 - Radar, communication systems, receivers, transmitters, and antennas in suitable fields.
 - Instrument panels as cockpit and flight-test evidence.
 - Mechanical typewriters as HMI artifacts. This is an explicit scope choice: historic mechanical keyboards are included in the project's human-machine-interaction and consumer-technology coverage.
@@ -1845,27 +1849,44 @@ All reported rates describe this existing 100+100 convenience sample only. It wa
 
 All 29 accepted records were inspected individually against their source metadata and descriptions. The review found one clear false positive and several records whose inclusion depends on how contextual aircraft records are treated in the V1 corpus. This is a qualitative review of selected records only; it does not establish recall or false-negative rates.
 
-- **Clear false positive — `nasm_A19360009000`, “Flare, Drift, NC-3”.** The record was selected through the object type `Navigational instruments`, but its description identifies the flare as a signal used to show rescuers the aircraft's position. The taxonomy label is not supported by the artifact's function in this record. Exclude this record and refine the generic object-type match so a navigational-instrument label alone cannot select this kind of signaling device. Add it as a negative regression case when the policy is revised.
+- **Clear false positive — `nasm_A19360009000`, “Flare, Drift, NC-3”.** The v0.2 record was selected through the object type `Navigational instruments`, but its description identifies the flare as a signal used to show rescuers the aircraft's position. The taxonomy label is not supported by the artifact's function in this record. Policy v0.3 removes generic navigational-instrument matching from `object_types`; a negative regression test now verifies the record is excluded.
 - **Classification review — `nasm_A19480159000`, G-Meter / Accelerometer.** The artifact is a flight instrument and appears relevant to the scope, but the current `guidance` domain label may be inaccurate. Review the domain vocabulary or allow an appropriate control/instrumentation classification; do not treat this as a relevance false positive.
 - **Context-dependent records.** Several accepted records describe whole aircraft or aircraft-level systems, with the relevant evidence appearing in contextual descriptions: Langley Aerodrome (control system), Douglas World Cruiser (flight instrumentation), Lockheed Vega (autopilot/radio compass), Bell XP-59A (instrument panel), Piper PA-12 (radio/navigation equipment), Fowler-Gage (control system), Bell X-1 (flight-test instrumentation), and P-61 (radar). Their evidence is relevant, but whether to retain them depends on whether V1 includes contextual platform records as well as standalone technology artifacts. Make that scope decision before freezing the corpus slice.
 - **HMI boundary.** The mechanical typewriter matches remain consistent with the explicit project decision to include historic typewriters as HMI and consumer-technology artifacts. `nmah_849914` has limited structured evidence (class B), so retain it only while that scope decision stands.
 
 The remaining reviewed matches have direct evidence for in-scope technologies such as autopilots, radio transmitters and receivers, compasses and gyroscopic instruments, navigation devices, radar, antennas, and typewriters. The manual review supports the v0.2 vocabulary as a useful candidate generator, subject to the false-positive correction and scope decisions above.
 
+### Policy v0.3 correction and evaluation
+
+The v0.2 false positive was caused by matching the broad object type `Navigational instruments` without confirming the artifact's function. v0.3 removes that generic phrase from `object_types` matching and adds the specific artifact terms `compass` and `drift meter` to title and descriptive fields. This retains the sample's actual compass and drift-meter artifacts while excluding the flare. The policy remains deterministic and versioned; no LLM or text-length threshold was added.
+
+The same 200 NASM/NMAH records were normalized and evaluated with v0.3. The updated report is `build/corpus-selection-report-v03.json`.
+
+| Metric | v0.2 | v0.3 |
+|---|---:|---:|
+| Input records | 200 | 200 |
+| Accepted | 29 | 28 |
+| Accepted with narrative evidence (A) | 17 | 16 |
+| Accepted with structured evidence (B) | 12 | 12 |
+| Excluded as out of domain | 171 | 172 |
+| NASM accepted | 25 | 24 |
+| NMAH accepted | 4 | 4 |
+
+The difference is the intended removal of the flare record. The policy change preserved the other manually reviewed matches, including the compass and drift-meter records. These remain convenience-sample counts and do not establish recall or representativeness.
+
 ### Execution and validation
 
 The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes a JSON report under `build/`, and must run with the repository root as its working directory. The command-line run from the repository root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
 
-Sixteen focused selection test functions were invoked directly and passed in the implementation environment. The full repository pytest suite was not run there because `pytest` was unavailable.
+Eighteen focused selection test functions were invoked directly and passed after the v0.3 change. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
 
 ### Next steps
 
-1. Refine the object-type rule that selected `nasm_A19360009000`, and add the record as a negative regression case.
-2. Decide whether V1 includes contextual aircraft/platform records, and review the G-meter domain assignment.
-3. Review plausible false negatives from the remaining excluded records and refine field-specific terms only where the source evidence supports them.
-4. Run the full repository pytest suite in the project environment.
-5. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
+1. Decide whether V1 includes contextual aircraft/platform records, and review the G-meter domain assignment.
+2. Review plausible false negatives from the remaining excluded records and refine field-specific terms only where the source evidence supports them.
+3. Run the full repository pytest suite in the project environment.
+4. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — correct the identified v0.2 false positive, decide the treatment of contextual aircraft records, and review plausible false negatives before finalizing V1 corpus criteria.
+**Resume point:** Step 1.4.3 — decide the treatment of contextual aircraft records, review the G-meter domain assignment and plausible false negatives, then finalize V1 corpus criteria.
