@@ -4,11 +4,11 @@
 
 | Record | Evidence class | Match evidence | Review |
 |---|---|---|---|
-| `nmah_1203283` | B | “wristwatch model electric”; “electric wristwatch” in object types | In scope as a model representing an electric wristwatch. Confirm model-object retention in the final corpus rules. |
+| `nmah_1203283` | B | “wristwatch model electric”; “electric wristwatch” in object types | In scope as a model explicitly representing an electric wristwatch. |
 | `nmah_1203284` | B | “wristwatch electric”; “electric wristwatch prototype” | Electric wristwatch prototype; in scope. |
 | `nmah_1203285` | B | “wristwatch electric”; “electric wristwatch prototype” | Electric wristwatch prototype; in scope. |
 | `nmah_1203286` | B | “wristwatch electric”; “Hamilton electric wristwatch” | Electric wristwatch; in scope. |
-| `nmah_1203287` | B | “electric watch”; “Watch, Electric, Large Model Of” | Large model of an electric watch; in scope if object models are retained. |
+| `nmah_1203287` | B | “electric watch”; “Watch, Electric, Large Model Of” | Large model explicitly representing an electric watch; in scope. |
 | `nasm_A19480100000` | B | Title names oil temperature, oil pressure, and fuel pressure indicators | Engine monitoring instrument; in scope as aircraft instrumentation. |
 | `nasm_A19480101000` | B | Title names oil temperature, oil pressure, and fuel pressure indicators | Engine monitoring instrument; in scope as aircraft instrumentation. |
 | `nasm_A19480102000` | B | “indicator temperature” in title | Dual temperature indicator; in scope as aircraft instrumentation. |
@@ -18,11 +18,19 @@
 | `nasm_A19280002000` | A | Long description lists oil temperature, oil pressure, fuel quantity, tachometer, and airspeed indicator | Whole-aircraft record with direct evidence for its installed instruments; in scope under the platform rule below. |
 | `nasm_A19490051000` | A | Long description names oil temperature, oil pressure, altimeter, and tachometer | Whole-aircraft record with direct evidence for its installed instruments; in scope under the platform rule below. |
 
-The review found no off-domain addition among these records. Evidence classes and matching terms agree with the source data. Two NMAH records represent models rather than functional watches; they remain included in the current report because they explicitly represent electric-watch designs, with final model-object retention still to be stated in the V1 corpus rules.
+The review found no off-domain addition among these records. Evidence classes and matching terms agree with the source data. Two NMAH records represent models rather than functional watches; both remain in scope because their metadata explicitly identifies an electric watch as the represented technology.
+
+## Model-object rule
+
+Include a model when the record explicitly identifies an in-scope technology as the model's subject. This includes the two electric-watch models. A generic aircraft model does not qualify unless its description independently identifies an in-scope system or instrument.
 
 ## Platform-record rule
 
 An aircraft record is eligible when its source description explicitly identifies an in-scope onboard instrument or system. The aircraft's historical importance or its `Aircraft` object type alone is not sufficient. The two platform records added by v0.4 meet this rule because their descriptions enumerate flight instruments. A regression test ensures that a generic aircraft record without such evidence remains excluded.
+
+## Navigation boundary
+
+V1 guidance/navigation covers aviation and spaceflight technology. Maritime timekeeping and terrestrial surveying are outside this slice: `nmah_1301195` (Marine Clock) and `nmah_1203304` (John Bliss transit) remain excluded. Regression tests preserve both exclusions.
 
 ## Validation
 

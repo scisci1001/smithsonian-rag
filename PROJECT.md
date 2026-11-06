@@ -1664,7 +1664,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Correct the false positive and verify the revised policy on the same 200 records
 - [x] Include electric watches and aircraft instruments in the V1 domain scope
 - [x] Review the 13 records newly selected by v0.4; document evidence and add a negative aircraft-platform regression case
-- [ ] Decide whether electric-watch models are retained and finalize navigation boundaries
+- [x] Retain models when metadata explicitly identifies an in-scope technology as their subject; electric-watch models qualify
+- [x] Limit V1 guidance/navigation to aviation and spaceflight; maritime timekeeping and terrestrial surveying are excluded
 - [ ] Review other plausible false negatives; then finalize a coherent V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
@@ -1889,7 +1890,7 @@ This was an exploratory screen, not a blinded benchmark or a gold-standard annot
 
 ### Policy v0.4 scope update and evaluation
 
-Following the explicit scope decision to include electric watches and aircraft instruments, v0.4 adds field-specific electric-watch terms to electronics, adds engine-monitoring instruments and panel meters to control/electronics, and moves G-meter/accelerometer matches from guidance to control. Generic `electric`, `indicator`, and `meter` matches are not used by themselves.
+Following the explicit scope decision to include electric watches and aircraft instruments, v0.4 adds field-specific electric-watch terms to electronics, adds engine-monitoring instruments and panel meters to control/electronics, and moves G-meter/accelerometer matches from guidance to control. Generic `electric`, `indicator`, and `meter` matches are not used by themselves. Models are eligible when their metadata explicitly identifies an in-scope technology as the subject. Whole-aircraft records are eligible only when descriptions identify an in-scope onboard system or instrument. V1 guidance/navigation covers aviation and spaceflight; maritime timekeeping and terrestrial surveying remain out of scope.
 
 The same 200 NASM/NMAH records were normalized and reprocessed. The machine-readable report is `build/corpus-selection-report-v04.json`.
 
@@ -1905,22 +1906,21 @@ The same 200 NASM/NMAH records were normalized and reprocessed. The machine-read
 
 The 13 additions are the 11 reviewed electric-watch and instrument records plus two NASM aircraft records whose narratives directly describe the newly included flight instruments. The G-meter remains accepted and is now classified only as `control`. Accepted domain counts overlap: control 16, electronics 14, guidance 12, and human-machine interaction 4. These sample rates are not representative estimates for the full collections.
 
-Manual review confirmed that all 13 additions have direct evidence for the approved scope. Two watch records are models rather than functional watches; their retention depends on the V1 rule for models. The two whole-aircraft records describe installed instruments directly. The platform rule is: include aircraft records when the source description explicitly identifies an in-scope onboard instrument or system; the aircraft type or historic importance alone is insufficient. See [`selection-v04-manual-review.md`](selection-v04-manual-review.md).
+Manual review confirmed that all 13 additions have direct evidence for the approved scope. Two watch records are models rather than functional watches; they qualify because their metadata explicitly identifies electric watches as the represented technology. The two whole-aircraft records describe installed instruments directly. The aircraft type or historic importance alone is insufficient. V1 guidance/navigation is limited to aviation and spaceflight, so the NMAH Marine Clock and John Bliss surveying transit remain excluded. See [`selection-v04-manual-review.md`](selection-v04-manual-review.md).
 
 ### Execution and validation
 
 The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes a versioned JSON report under `build/`, and must run with the repository root as its working directory. The filename is `corpus-selection-report-v{policy version without dots}.json`, so policy version `0.4` produces `corpus-selection-report-v04.json`. The version is taken from the generated selection report, ensuring the filename matches the policy actually used. The command-line run from the repository root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
 
-Twenty-two focused selection test functions and three report-filename test functions were invoked directly and passed. An end-to-end run processed all 200 records and wrote `build/corpus-selection-report-v04.json`. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
+Twenty-four focused selection test functions and three report-filename test functions were invoked directly and passed. An end-to-end run processed all 200 records and wrote `build/corpus-selection-report-v04.json`. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
 
 ### Next steps
 
-1. Decide whether electric-watch models are retained and settle whether marine clocks and surveying transits belong in the navigation scope.
-2. Review other plausible false negatives and refine field-specific terms only where source evidence supports them.
-3. If a model comparison remains useful, run a structured-output API batch against a human-reviewed sample; no API classification has been run yet.
-4. Run the full repository pytest suite in the project environment.
-5. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
+1. Review other plausible false negatives and refine field-specific terms only where source evidence supports them.
+2. If a model comparison remains useful, run a structured-output API batch against a human-reviewed sample; no API classification has been run yet.
+3. Run the full repository pytest suite in the project environment.
+4. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — decide the model-object and navigation-instrument boundaries, then review remaining plausible false negatives before finalizing V1 corpus criteria.
+**Resume point:** Step 1.4.3 — review remaining plausible false negatives under the clarified model-object, platform-record, and navigation boundaries before finalizing V1 corpus criteria.

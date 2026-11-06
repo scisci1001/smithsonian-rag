@@ -19,17 +19,17 @@ The screen identified 11 strong candidates for inclusion if electronic timekeepi
 
 These candidates show a vocabulary and category gap, not merely a handful of spelling variants. The current policy has no general representation for electric watches, voltmeters, ammeters, tachometers, or engine-monitoring gauges.
 
-## Scope-dependent candidates
+## Other candidates and later scope decisions
 
-These records require a scope decision before they should be counted as false negatives:
+The initial screen flagged these records for scope review. The subsequent V1 boundary decision is recorded below:
 
-- `nmah_1301195` — Marine Clock; likely navigation/timekeeping, but the available canonical record has little descriptive evidence.
-- `nmah_1303304` — John Bliss transit; a surveying instrument that may belong if guidance includes terrestrial navigation.
-- `nmah_850825` and `nmah_850826` — electromechanical clocks; relevant only if electromechanical timekeeping belongs in the electronics domain.
+- `nmah_1301195` — Marine Clock; excluded because V1 guidance/navigation is limited to aviation and spaceflight.
+- `nmah_1203304` — John Bliss transit; excluded as a terrestrial surveying instrument.
+- `nmah_850825` and `nmah_850826` — electromechanical clocks; not included by the electric-watch scope decision.
 - `nasm_A19480104000` — temperature-sensing bulb; potentially an aircraft instrumentation component.
 - `nasm_A19400027000` — controllable-pitch propeller; its pitch is adjusted by the pilot, but the artifact is also propulsion equipment.
 - `nasm_A19320084000` — barograph; a pressure-recording instrument with limited contextual evidence in this sample.
-- Whole-aircraft records whose narratives mention control mechanisms or other in-scope systems; inclusion depends on the V1 policy for platform records.
+- Whole-aircraft records are included only when descriptions explicitly identify an in-scope onboard system or instrument.
 
 Most other exclusions in this convenience sample are aircraft propulsion engines and propellers, whole-aircraft records without sufficiently direct in-scope system evidence, mechanical clocks and watches, locks, and unrelated artifacts. They remain outside the current D-019 scope unless the project domains are broadened.
 

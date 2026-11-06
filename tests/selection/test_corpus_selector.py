@@ -228,6 +228,36 @@ def test_electric_wristwatch_variants_match_electronics() -> None:
     assert all(result.evidence_class is EvidenceClass.STRUCTURED for result in results)
 
 
+def test_marine_clock_is_outside_the_aviation_space_navigation_slice() -> None:
+    item = record(
+        "nmah_1301195",
+        unit_code="NMAH",
+        title="Marine Clock",
+        object_types=["Clocks"],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is False
+    assert result.matched_domains == []
+    assert result.reason_codes == [ReasonCode.OUT_OF_DOMAIN]
+
+
+def test_terrestrial_surveying_transit_is_outside_the_v1_navigation_slice() -> None:
+    item = record(
+        "nmah_1203304",
+        unit_code="NMAH",
+        title="Transit, John Bliss #663",
+        object_types=["Transit, John Bliss #663"],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is False
+    assert result.matched_domains == []
+    assert result.reason_codes == [ReasonCode.OUT_OF_DOMAIN]
+
+
 def test_aircraft_panel_instruments_match_control_or_electronics() -> None:
     cases = [
         (
