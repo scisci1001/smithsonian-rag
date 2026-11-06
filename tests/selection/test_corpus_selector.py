@@ -23,7 +23,7 @@ def test_narrative_domain_record_is_accepted_with_reasons() -> None:
     assert result.evidence_class is EvidenceClass.NARRATIVE
     assert result.matched_domains == ["computing", "guidance"]
     assert result.reason_codes == [ReasonCode.DOMAIN_MATCH, ReasonCode.NARRATIVE_EVIDENCE]
-    assert result.policy_version == "0.3"
+    assert result.policy_version == "0.4"
     assert {match.term for match in result.matched_terms} == {"computer", "guidance"}
 
 
@@ -177,6 +177,91 @@ def test_specific_compass_and_drift_meter_artifacts_match_guidance() -> None:
     assert all(result.matched_domains == ["guidance"] for result in results)
     assert any(match.term == "compass" for match in results[0].matched_terms)
     assert any(match.term == "drift meter" for match in results[1].matched_terms)
+
+
+def test_electric_wristwatch_variants_match_electronics() -> None:
+    watch_records = [
+        record(
+            "nmah_1203283",
+            unit_code="NMAH",
+            title="wristwatch model, electric",
+            object_types=["wristwatch model, electric", "model of Hamilton electric wristwatch"],
+        ),
+        record(
+            "nmah_1203284",
+            unit_code="NMAH",
+            title="wristwatch, electric",
+            object_types=["wristwatch, electric", "electric wristwatch prototype, Hamilton"],
+        ),
+        record(
+            "nmah_1203287",
+            unit_code="NMAH",
+            title="Ventura",
+            object_types=["wristwatch, electric", "Watch, Electric, Large Model Of"],
+        ),
+    ]
+
+    results = [CorpusSelector().select(item) for item in watch_records]
+
+    assert all(result.accepted for result in results)
+    assert all(result.matched_domains == ["electronics"] for result in results)
+    assert all(result.evidence_class is EvidenceClass.STRUCTURED for result in results)
+
+
+def test_aircraft_panel_instruments_match_control_or_electronics() -> None:
+    cases = [
+        (
+            "nasm_oil_fuel_indicator",
+            "Indicator, Combined, Oil Temperature / Oil Pressure / Fuel Pressure, Navy",
+            ["Engines"],
+            "control",
+        ),
+        (
+            "nasm_dual_temperature_indicator",
+            "Indicator, Temperature, Dual",
+            ["Engines"],
+            "control",
+        ),
+        (
+            "nasm_tachometer",
+            "Indicator, Tachometer, Japanese Army, Type-100",
+            ["Engines"],
+            "control",
+        ),
+        (
+            "nasm_fuel_quantity_indicator",
+            "Indicator, Fuel Quantity, Japanese Army, Type-100",
+            ["Engines"],
+            "control",
+        ),
+        (
+            "nasm_voltmeter_ammeter",
+            "Voltmeter / Ammeter, Japanese Army",
+            ["Instruments"],
+            "electronics",
+        ),
+    ]
+
+    for record_id, title, object_types, expected_domain in cases:
+        result = CorpusSelector().select(
+            record(record_id, title=title, object_types=object_types)
+        )
+        assert result.accepted is True
+        assert result.matched_domains == [expected_domain]
+        assert result.evidence_class is EvidenceClass.STRUCTURED
+
+
+def test_g_meter_is_classified_as_control_instrumentation() -> None:
+    item = record(
+        "nasm_A19480159000",
+        title="G-Meter / Accelerometer",
+        object_types=["Flight Instruments"],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is True
+    assert result.matched_domains == ["control"]
 
 
 def test_navigation_topic_alone_does_not_select_a_pendulum_clock() -> None:

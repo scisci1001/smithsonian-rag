@@ -8,7 +8,7 @@
 search and grounded question answering over Smithsonian Open Access
 collections.
 
-**Project status:** Corpus Selection Policy v0.3 implemented and evaluated on 200 local records; manual review identified and corrected one v0.2 false positive
+**Project status:** Corpus Selection Policy v0.4 implemented and evaluated on 200 local records; electric watches and aircraft instruments are included by explicit scope decision
 
 The project is a portfolio-grade Retrieval-Augmented Generation (RAG)
 system built on public Smithsonian Open Access collection data.
@@ -1631,7 +1631,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 27. Current Status — Authoritative
 
-**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.3 implemented and evaluated on 200 local records; the v0.2 false positive identified in manual review is corrected.
+**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.4 implemented and evaluated on 200 local records; the v0.2 false positive is corrected and the approved electronics/instrumentation scope is included.
 
 ### Completed
 
@@ -1651,6 +1651,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Selection policy v0.2 evaluated on all 200 local NASM/NMAH records
 - [x] D-019 v0.3 removes unsupported generic navigational-instrument type matching and adds a negative flare regression case
 - [x] Selection policy v0.3 evaluated on all 200 local NASM/NMAH records
+- [x] D-019 v0.4 adds electric watches and aircraft instrument evidence; G-meter is classified as control instrumentation
+- [x] Selection policy v0.4 evaluated on all 200 local NASM/NMAH records
 
 ### In progress / open
 
@@ -1659,8 +1661,9 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Define narrative versus physical evidence representations
 - [x] Complete manual precision review of all 29 v0.2 matches; one clear false positive and unresolved scope questions documented
 - [x] Correct the false positive and verify the revised policy on the same 200 records
-- [ ] Review plausible v0.2 false negatives; then finalize a coherent V1 corpus slice and sampling strategy
-- [ ] Decide whether V1 includes contextual aircraft/platform records and review the G-meter domain assignment
+- [x] Include electric watches and aircraft instruments in the V1 domain scope
+- [ ] Review the 13 records newly selected by v0.4; finalize remaining platform/navigation boundaries
+- [ ] Review other plausible false negatives; then finalize a coherent V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
 - [ ] Select embedding model, LLM, retrieval storage, and RAG framework based on requirements
@@ -1674,7 +1677,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 28. Step 1.4 — Canonical Domain Model and V1 Corpus Selection
 
-**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.3 implemented and evaluated on the existing 200-record sample. Manual review of the 29 v0.2 accepted matches is complete; corpus criteria remain provisional pending scope decisions and false-negative review.
+**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.4 implemented and evaluated on the existing 200-record sample. Manual review of v0.2 matches is complete; v0.4 additions and remaining scope boundaries still require review.
 
 The canonical record model preserves source identity, provenance, structured metadata, distinct narrative and physical text, record-level rights, and per-media rights. The initial V1 domain spans computing, electronics, guidance, control, and human-machine interaction across NASM and NMAH.
 
@@ -1786,13 +1789,13 @@ Use offline unit tests and a batch validation report as separate quality checks:
 
 The 200-record convenience sample has **zero failures**, but the gate must be reassessed when corpus selection expands to new records and subject areas.
 
-## 31. Step 1.4.3 — Corpus Selection Policy v0.2 Evaluation and v0.3 Correction
+## 31. Step 1.4.3 — Corpus Selection Policy v0.2–v0.4 Evaluation
 
-**Status:** Policy v0.3 is implemented and evaluated on the 200-record convenience sample. The 29 v0.2 accepted matches were reviewed manually; the clear false positive is corrected. Final corpus criteria remain provisional pending scope decisions and false-negative review.
+**Status:** Policy v0.4 is implemented and evaluated on the 200-record convenience sample. The v0.2 false positive is corrected; explicit electric-watch and aircraft-instrument scope has been added. Remaining corpus criteria are provisional pending review of the v0.4 additions and remaining scope boundaries.
 
 ### D-019 — Corpus Selection Policy
 
-**Status:** Implemented; v0.3 is the current policy version. The v0.2 metrics below are retained as the initial evaluation baseline.
+**Status:** Implemented; v0.4 is the current policy version. Earlier metrics below are retained as evaluation baselines.
 
 The policy is deterministic, versioned, and unit-aware. It applies field-specific terms to the canonical title, topics, object types, narrative texts, physical descriptions, and entity names. NASM and NMAH use the same vocabulary and have separate metrics. Decisions record the policy version, matched domains, exact matched term and canonical field, evidence class, and reason codes.
 
@@ -1812,6 +1815,8 @@ The review of the eight v0.1 matches found no clear false positives, while inspe
 - Directional gyros, gyroscopes, radio and magnetic compasses, specific compass and drift-meter artifacts, flight instruments, inclinometers, accelerometers, and astrodromes in suitable fields.
 - Radar, communication systems, receivers, transmitters, and antennas in suitable fields.
 - Instrument panels as cockpit and flight-test evidence.
+- Electric watches as electronics and consumer-technology artifacts.
+- Aircraft panel instruments, including engine-monitoring gauges, tachometers, voltmeters, and ammeters. G-meters and accelerometers are classified as control/instrumentation evidence rather than guidance.
 - Mechanical typewriters as HMI artifacts. This is an explicit scope choice: historic mechanical keyboards are included in the project's human-machine-interaction and consumer-technology coverage.
 
 The policy intentionally does not match `stabilizer` by itself because the sample uses it for ordinary aircraft structure. A generic `Navigation` topic by itself is not sufficient; this avoids selecting an unrelated Galileo pendulum clock. Generic `control`, `display`, and `radio` terms are not used by themselves.
@@ -1874,19 +1879,44 @@ The same 200 NASM/NMAH records were normalized and evaluated with v0.3. The upda
 
 The difference is the intended removal of the flare record. The policy change preserved the other manually reviewed matches, including the compass and drift-meter records. These remain convenience-sample counts and do not establish recall or representativeness.
 
+### Exploratory AI screen and scope decision
+
+A qualitative ChatGPT screen of the 172 v0.3 exclusions surfaced 11 likely in-scope records in two newly confirmed categories: five Hamilton electric wristwatch records (`nmah_1203283`–`nmah_1203287`) and six NASM panel indicators/meters (`nasm_A19480100000`, `nasm_A19480101000`, `nasm_A19480102000`, `nasm_A19480143000`, `nasm_A19480151000`, `nasm_A19480154000`). The project scope now includes electric watches as electronics and aircraft instruments as control/instrumentation. The review also identified scope-dependent navigation instruments, electromechanical clocks, a temperature-sensing bulb, a controllable-pitch propeller, a barograph, and contextual aircraft records.
+
+This was an exploratory screen, not a blinded benchmark or a gold-standard annotation. No external model API was called; it does not establish precision, recall, or actual API cost. The review and rough cost assumptions are recorded in [`selection-llm-experiment-v01.md`](selection-llm-experiment-v01.md). Based on the current displayed Batch rates and approximate token counts, a 200-record API run would cost about $0.01 with gpt-6-luna or $0.23 with gpt-6.1-sol; actual usage depends on prompt, tokenization, output, and retries. Batch pricing is described in the [API guide](https://developers.openai.com/api/docs/guides/batch) and [pricing page](https://developers.openai.com/api/docs/pricing).
+
+### Policy v0.4 scope update and evaluation
+
+Following the explicit scope decision to include electric watches and aircraft instruments, v0.4 adds field-specific electric-watch terms to electronics, adds engine-monitoring instruments and panel meters to control/electronics, and moves G-meter/accelerometer matches from guidance to control. Generic `electric`, `indicator`, and `meter` matches are not used by themselves.
+
+The same 200 NASM/NMAH records were normalized and reprocessed. The machine-readable report is `build/corpus-selection-report-v04.json`.
+
+| Metric | v0.3 | v0.4 |
+|---|---:|---:|
+| Input records | 200 | 200 |
+| Accepted | 28 | 41 |
+| Accepted with narrative evidence (A) | 16 | 18 |
+| Accepted with structured evidence (B) | 12 | 23 |
+| Excluded as out of domain | 172 | 159 |
+| NASM accepted | 24 | 32 |
+| NMAH accepted | 4 | 9 |
+
+The 13 additions are the 11 reviewed electric-watch and instrument records plus two NASM aircraft records whose narratives directly describe the newly included flight instruments. The G-meter remains accepted and is now classified only as `control`. Accepted domain counts overlap: control 16, electronics 14, guidance 12, and human-machine interaction 4. These sample rates are not representative estimates for the full collections.
+
 ### Execution and validation
 
 The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes a JSON report under `build/`, and must run with the repository root as its working directory. The command-line run from the repository root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
 
-Eighteen focused selection test functions were invoked directly and passed after the v0.3 change. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
+Twenty-one focused selection test functions were invoked directly and passed after the v0.4 change. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
 
 ### Next steps
 
-1. Decide whether V1 includes contextual aircraft/platform records, and review the G-meter domain assignment.
-2. Review plausible false negatives from the remaining excluded records and refine field-specific terms only where the source evidence supports them.
-3. Run the full repository pytest suite in the project environment.
-4. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
+1. Manually review the 13 records newly selected by v0.4 and decide the remaining navigation/platform boundaries.
+2. Review other plausible false negatives and refine field-specific terms only where source evidence supports them.
+3. If a model comparison remains useful, run a structured-output API batch against a human-reviewed sample; no API classification has been run yet.
+4. Run the full repository pytest suite in the project environment.
+5. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — decide the treatment of contextual aircraft records, review the G-meter domain assignment and plausible false negatives, then finalize V1 corpus criteria.
+**Resume point:** Step 1.4.3 — review the 13 v0.4 additions and decide the remaining navigation/platform boundaries before finalizing the V1 corpus slice.
