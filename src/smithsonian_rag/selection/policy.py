@@ -75,6 +75,8 @@ CONTROL_FLIGHT_INSTRUMENT_TERMS = (
     "indicator temperature",
     "tachometer",
     "fuel quantity",
+    "temperature sensing",
+    "controllable pitch propeller",
 )
 HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM = "typewriter"
 
@@ -232,7 +234,7 @@ HUMAN_MACHINE_INTERACTION_FIELD_TERMS = {
 
 
 DEFAULT_POLICY = CorpusSelectionPolicy(
-    version="0.4",
+    version="0.5",
     domain_rules=(
         DomainRule(domain="computing", field_terms=COMPUTING_FIELD_TERMS),
         DomainRule(domain="electronics", field_terms=ELECTRONICS_FIELD_TERMS),

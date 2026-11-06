@@ -23,7 +23,7 @@ def test_narrative_domain_record_is_accepted_with_reasons() -> None:
     assert result.evidence_class is EvidenceClass.NARRATIVE
     assert result.matched_domains == ["computing", "guidance"]
     assert result.reason_codes == [ReasonCode.DOMAIN_MATCH, ReasonCode.NARRATIVE_EVIDENCE]
-    assert result.policy_version == "0.4"
+    assert result.policy_version == "0.5"
     assert {match.term for match in result.matched_terms} == {"computer", "guidance"}
 
 
@@ -249,6 +249,54 @@ def test_terrestrial_surveying_transit_is_outside_the_v1_navigation_slice() -> N
         unit_code="NMAH",
         title="Transit, John Bliss #663",
         object_types=["Transit, John Bliss #663"],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is False
+    assert result.matched_domains == []
+    assert result.reason_codes == [ReasonCode.OUT_OF_DOMAIN]
+
+
+def test_temperature_sensing_bulb_matches_aircraft_instrumentation() -> None:
+    item = record(
+        "nasm_A19480104000",
+        title="Bulb, Temperature Sensing",
+        object_types=["Engines"],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is True
+    assert result.matched_domains == ["control"]
+    assert result.evidence_class is EvidenceClass.STRUCTURED
+
+
+def test_controllable_pitch_propeller_matches_aircraft_control() -> None:
+    item = record(
+        "nasm_A19400027000",
+        title="Propeller, Controllable-Pitch, Two-Blade",
+        object_types=["Propellers", "Propulsion systems"],
+        narrative_texts=[TextEntry(
+            category="notes",
+            label="Summary",
+            content="The pilot adjusted the controllable-pitch propeller to change power and fuel use.",
+        )],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is True
+    assert result.matched_domains == ["control"]
+    assert result.evidence_class is EvidenceClass.NARRATIVE
+
+
+def test_barograph_without_aviation_or_spaceflight_evidence_stays_excluded() -> None:
+    item = record(
+        "nasm_A19320084000",
+        title="Barograph",
+        object_types=["Scientific instruments"],
+        topics=["Science"],
     )
 
     result = CorpusSelector().select(item)

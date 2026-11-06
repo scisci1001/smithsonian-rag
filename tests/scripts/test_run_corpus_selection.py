@@ -3,7 +3,7 @@ from scripts.run_corpus_selection import report_filename
 
 
 def test_policy_version_is_embedded_in_report_filename() -> None:
-    assert report_filename("0.4") == "corpus-selection-report-v04.json"
+    assert report_filename("0.5") == "corpus-selection-report-v05.json"
 
 
 def test_multi_component_policy_version_is_embedded_without_dots() -> None:
