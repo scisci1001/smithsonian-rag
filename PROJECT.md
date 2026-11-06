@@ -1662,7 +1662,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Complete manual precision review of all 29 v0.2 matches; one clear false positive and unresolved scope questions documented
 - [x] Correct the false positive and verify the revised policy on the same 200 records
 - [x] Include electric watches and aircraft instruments in the V1 domain scope
-- [ ] Review the 13 records newly selected by v0.4; finalize remaining platform/navigation boundaries
+- [x] Review the 13 records newly selected by v0.4; document evidence and add a negative aircraft-platform regression case
+- [ ] Decide whether electric-watch models are retained and finalize navigation boundaries
 - [ ] Review other plausible false negatives; then finalize a coherent V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
@@ -1903,15 +1904,17 @@ The same 200 NASM/NMAH records were normalized and reprocessed. The machine-read
 
 The 13 additions are the 11 reviewed electric-watch and instrument records plus two NASM aircraft records whose narratives directly describe the newly included flight instruments. The G-meter remains accepted and is now classified only as `control`. Accepted domain counts overlap: control 16, electronics 14, guidance 12, and human-machine interaction 4. These sample rates are not representative estimates for the full collections.
 
+Manual review confirmed that all 13 additions have direct evidence for the approved scope. Two watch records are models rather than functional watches; their retention depends on the V1 rule for models. The two whole-aircraft records describe installed instruments directly. The platform rule is: include aircraft records when the source description explicitly identifies an in-scope onboard instrument or system; the aircraft type or historic importance alone is insufficient. See [`selection-v04-manual-review.md`](selection-v04-manual-review.md).
+
 ### Execution and validation
 
 The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes a JSON report under `build/`, and must run with the repository root as its working directory. The command-line run from the repository root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
 
-Twenty-one focused selection test functions were invoked directly and passed after the v0.4 change. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
+Twenty-two focused selection test functions were invoked directly and passed after the v0.4 change. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
 
 ### Next steps
 
-1. Manually review the 13 records newly selected by v0.4 and decide the remaining navigation/platform boundaries.
+1. Decide whether electric-watch models are retained and settle whether marine clocks and surveying transits belong in the navigation scope.
 2. Review other plausible false negatives and refine field-specific terms only where source evidence supports them.
 3. If a model comparison remains useful, run a structured-output API batch against a human-reviewed sample; no API classification has been run yet.
 4. Run the full repository pytest suite in the project environment.
@@ -1919,4 +1922,4 @@ Twenty-one focused selection test functions were invoked directly and passed aft
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — review the 13 v0.4 additions and decide the remaining navigation/platform boundaries before finalizing the V1 corpus slice.
+**Resume point:** Step 1.4.3 — decide the model-object and navigation-instrument boundaries, then review remaining plausible false negatives before finalizing V1 corpus criteria.

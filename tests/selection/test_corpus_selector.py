@@ -47,6 +47,26 @@ def test_generic_display_and_control_do_not_match() -> None:
     assert result.reason_codes == [ReasonCode.OUT_OF_DOMAIN]
 
 
+def test_aircraft_platform_alone_is_not_enough_to_match() -> None:
+    item = record(
+        "nasm_aircraft_only",
+        title="Historic Aircraft",
+        object_types=["Aircraft"],
+        topics=["Aeronautics"],
+        narrative_texts=[TextEntry(
+            category="notes",
+            label="Summary",
+            content="An early aircraft used for military flight demonstrations.",
+        )],
+    )
+
+    result = CorpusSelector().select(item)
+
+    assert result.accepted is False
+    assert result.matched_domains == []
+    assert result.reason_codes == [ReasonCode.OUT_OF_DOMAIN]
+
+
 def test_automatic_pilot_synonym_matches_guidance() -> None:
     item = record(
         "nasm_autopilot",
