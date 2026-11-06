@@ -8,7 +8,7 @@
 search and grounded question answering over Smithsonian Open Access
 collections.
 
-**Project status:** Canonical domain model v0.1 accepted; implementation next
+**Project status:** Corpus Selection Policy v0.1 implemented; initial 200-record evaluation complete; selection-quality review in progress
 
 The project is a portfolio-grade Retrieval-Augmented Generation (RAG)
 system built on public Smithsonian Open Access collection data.
@@ -1631,7 +1631,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 27. Current Status — Authoritative
 
-**Project state:** Canonical domain model v0.1 accepted; deterministic normalization implementation next.
+**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.1 implemented and evaluated on 200 local records; relevance review remains open.
 
 ### Completed
 
@@ -1647,13 +1647,15 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Content API identifier issue diagnosed and corrected
 - [x] Three NMAH search/detail comparisons completed
 - [x] D-016 baseline detail-enrichment decision recorded
+- [x] D-019 Corpus Selection Policy v0.1 implemented and tested
+- [x] Selection report generated for all 200 local NASM/NMAH records
 
 ### In progress / open
 
 - [x] Accept canonical `SmithsonianRecord` v0.1 conceptual schema
 - [x] Implement and validate unit-specific NASM/NMAH mapping rules
 - [x] Define narrative versus physical evidence representations
-- [ ] Select a coherent, measurable V1 corpus slice and sampling strategy
+- [ ] Review selection matches and likely false negatives; then finalize a coherent V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
 - [ ] Select embedding model, LLM, retrieval storage, and RAG framework based on requirements
@@ -1665,17 +1667,15 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [ ] Ground-truth evaluation dataset and retrieval experiments
 - [ ] Multimodal retrieval, operational hardening, and deployment
 
-## 28. Next Step — Step 1.4
+## 28. Step 1.4 — Canonical Domain Model and V1 Corpus Selection
 
-### Canonical Domain Model and V1 Corpus Selection
+**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.1 implemented and evaluated on the existing 200-record sample. Selection-quality review remains in progress.
 
-**First deliverable:** Design a canonical record model from the observed EDAN schemas, preserving source identity, provenance, structured metadata, distinct narrative/physical text, record-level rights, and per-media rights.
+The canonical record model preserves source identity, provenance, structured metadata, distinct narrative and physical text, record-level rights, and per-media rights. The initial V1 domain spans computing, electronics, guidance, control, and human-machine interaction across NASM and NMAH.
 
-**Second deliverable:** Specify the initial computing/electronics/guidance/human-machine-interaction corpus, including inclusion criteria, quality thresholds, sampling method, and a plan to validate Q01–Q15.
+The deterministic policy and its first evaluation are recorded in Section 31. The measured 4% selection rate applies only to the current convenience sample; it does not establish the final corpus size or representativeness.
 
-Do not implement embeddings, vector storage, or LLM-based enrichment until the model and corpus criteria are reviewed.
-
-**Historical resume point (completed):** Implement the accepted Pydantic domain models and deterministic NASM/NMAH normalization; then define V1 corpus inclusion criteria.
+Embeddings, vector storage, and LLM-based enrichment remain deferred until the selected corpus and research-question coverage have been reviewed.
 
 
 ---
@@ -1722,15 +1722,11 @@ The original raw EDAN record remains available in the raw-data storage layer rat
 - Keep all repository code, tests, comments, documentation, and user-facing text in English.
 - Do not commit `.env` or downloaded raw samples.
 
-### Current next step — Step 1.4.1
+### Implementation outcome
 
-1. Implement `SmithsonianRecord` and supporting Pydantic models.
-2. Implement deterministic NASM and NMAH field mapping.
-3. Test required-field validation, missing optional fields, text classification, identifiers, rights, and provenance.
-4. Run the complete regression suite.
-5. Next, specify V1 corpus selection and validate research questions Q01–Q15 against the selected records.
+The accepted Pydantic domain models and deterministic NASM/NMAH normalizers were implemented and validated in Steps 1.4.1 and 1.4.2. The next project work is the selection-quality review described in Section 31, followed by research-question coverage analysis.
 
-**Not yet decided:** final corpus inclusion thresholds, embedding/LLM providers, vector storage, and RAG framework.
+**Not yet decided:** final corpus inclusion rules and size, embedding/LLM providers, vector storage, and RAG framework.
 
 
 ---
@@ -1785,30 +1781,71 @@ Use offline unit tests and a batch validation report as separate quality checks:
 
 The 200-record convenience sample has **zero failures**, but the gate must be reassessed when corpus selection expands to new records and subject areas.
 
-## 31. Current Next Step — Step 1.4.3 V1 Corpus Selection Strategy
+## 31. Step 1.4.3 — Corpus Selection Policy v0.1 and Initial Evaluation
 
-**Status:** Next
+**Status:** Policy implemented; first evaluation completed on the 200-record local convenience sample. Final corpus-selection criteria remain provisional pending record-level relevance review.
 
-Define a deterministic, measurable selection policy for the initial corpus, with explicit attention to the computing, electronics, guidance, control, and human-machine interaction domain across NASM and NMAH.
+### D-019 — Corpus Selection Policy v0.1
 
-### Decisions to make
+**Status:** Implemented and evaluated; pending relevance review before final corpus selection.
 
-1. Select candidate topics and source queries for each owning unit.
-2. Specify inclusion/exclusion rules based on canonical fields and evidence quality.
-3. Distinguish records with narrative evidence from those containing only physical or structured descriptions.
-4. Define a minimum text-quality threshold and justify it using measured data rather than arbitrary assumptions.
-5. Define a sampling approach beyond the current ID-sorted convenience sample.
-6. Specify how missing media is represented without assuming images are unavailable.
-7. Check answerability of Q01–Q15 against the selected corpus before finalizing the initial corpus size.
+The baseline policy is deterministic and versioned (`0.1`). It applies explicit domain terms to canonical titles, topics, object types, narrative texts, physical descriptions, and entity names. NASM and NMAH use the same vocabulary and are measured separately.
 
-### Proposed implementation sequence
+Evidence is classified as:
 
-1. Draft the selection policy and measurable acceptance criteria.
-2. Implement a deterministic corpus-selection evaluator with unit tests.
-3. Run it on the existing 200 canonical records and inspect exclusions.
-4. Refine the policy, then test it against a more diverse sample.
-5. Only then decide whether the provisional 5,000–20,000 record target is appropriate.
+- **A — Narrative evidence:** at least one non-blank canonical narrative text.
+- **B — Structured evidence:** no narrative text, but at least one usable physical description or structured metadata value.
+- **C — Insufficient evidence:** neither narrative nor usable structured evidence is present.
+
+A record is accepted only when it matches a domain and has A or B evidence. Generic `control` and `display` terms alone do not qualify. The baseline uses no arbitrary text-length threshold and no LLM-based classification. Every result retains the policy version, matched domains, acceptance status, evidence class, and reason codes.
+
+### Initial evaluation — 200 local records
+
+| Metric | Result |
+|---|---:|
+| Input records | 200 |
+| Domain matched | 8 |
+| Accepted | 8 (4%) |
+| Accepted with narrative evidence (A) | 8 |
+| Accepted with structured evidence (B) | 0 |
+| Excluded as insufficient evidence (C) | 0 |
+| Excluded as out of domain | 192 |
+| Evidence class A / B / C | 84 / 116 / 0 |
+
+| Owning unit | Input | Domain matched | Accepted | Selection rate |
+|---|---:|---:|---:|---:|
+| NASM | 100 | 6 | 6 | 6% |
+| NMAH | 100 | 2 | 2 | 2% |
+
+Matched-domain distribution: `control` 5 records, `human_machine_interaction` 2, and `guidance` 1. No records matched `computing` or `electronics`.
+
+Accepted records:
+
+- NASM: `nasm_A19050003000`, `nasm_A19250008000`, `nasm_A19300012000`, `nasm_A19350058000`, `nasm_A19510004000`, `nasm_A19510007000`
+- NMAH: `nmah_850010`, `nmah_850018`
+
+### Interpretation and limits
+
+The result confirms that the policy runs across all 200 normalized records and produces unit-level metrics and explicit decisions. All eight matches have narrative evidence. The 116 B-class records were excluded because none matched the current domain vocabulary; no domain-matched record lacked evidence.
+
+The 4% rate describes this 100+100 convenience sample only. The sample was selected for data profiling and is not established as representative of the target technology domain or of the full Smithsonian collections. Do not use this rate to project the final corpus size. The lack of computing and electronics matches may reflect the sample or gaps in the initial vocabulary; it is not by itself evidence of an implementation defect.
+
+The report records matched domain names but not the exact matched terms or source text. Consequently, it is not sufficient by itself to determine whether each accepted record is a true positive or to identify missed relevant records among the exclusions.
+
+### Execution and validation
+
+The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes `build/corpus-selection-report.json`, and must run with the repository root as its working directory. The command-line run from the root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
+
+Seven focused selection test functions were invoked directly and passed in the implementation environment. The complete repository pytest suite was not run there because `pytest` was unavailable in that environment.
+
+### Next steps
+
+1. Review the eight accepted raw records for domain relevance and false positives.
+2. Inspect a set of plausible domain-related exclusions, including B-class records, for false negatives and missing vocabulary.
+3. Add exact matched terms and source-field evidence to the selection report to make decisions easier to audit.
+4. Revise and version the policy only after this review, then rerun it and compare results by unit and domain.
+5. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — design and validate the V1 corpus-selection rules.
+**Resume point:** Step 1.4.3 — review match quality and missed candidates, then refine the versioned selection policy.
