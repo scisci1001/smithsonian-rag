@@ -24,12 +24,19 @@ class ReasonCode(StrEnum):
     OUT_OF_DOMAIN = "OUT_OF_DOMAIN"
 
 
+class MatchedTerm(SelectionModel):
+    domain: str
+    field: str
+    term: str
+
+
 class SelectionResult(SelectionModel):
     record_id: str
     unit_code: str
     accepted: bool
     evidence_class: EvidenceClass
     matched_domains: list[str]
+    matched_terms: list[MatchedTerm]
     reason_codes: list[ReasonCode]
     policy_version: str
 

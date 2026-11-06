@@ -4,6 +4,7 @@ from smithsonian_rag.selection.corpus_selector import CorpusSelector
 from smithsonian_rag.selection.models import (
     CorpusSelectionReport,
     EvidenceClass,
+    MatchedTerm,
     ReasonCode,
     SelectionResult,
 )
@@ -15,6 +16,7 @@ __all__ = [
     "CorpusSelector",
     "DEFAULT_POLICY",
     "EvidenceClass",
+    "MatchedTerm",
     "ReasonCode",
     "SelectionResult",
 ]

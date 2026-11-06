@@ -33,10 +33,32 @@ class CorpusSelectionPolicy(BaseModel):
 
 
 ELECTRONICS_INTEGRATED_CIRCUIT_TERM = "integrated circuit"
+ELECTRONICS_RADAR_TERM = "radar"
+ELECTRONICS_RECEIVER_TERM = "receiver"
+ELECTRONICS_TRANSMITTER_TERM = "transmitter"
+ELECTRONICS_ANTENNA_TERM = "antenna"
+ELECTRONICS_AVIONICS_TERM = "avionics"
+ELECTRONICS_COMMUNICATION_SYSTEMS_TERM = "communication systems"
+ELECTRONICS_RADIO_RECEIVER_TERM = "radio receiver"
+ELECTRONICS_RADIO_TRANSMITTER_TERM = "radio transmitter"
 GUIDANCE_NAVIGATION_SYSTEM_TERM = "navigation system"
+GUIDANCE_AUTOPILOT_TERMS = ("autopilot", "automatic pilot", "auto pilot")
+GUIDANCE_DIRECTIONAL_GYRO_TERM = "directional gyro"
+GUIDANCE_GYROSCOPE_TERM = "gyroscope"
+GUIDANCE_RADIO_COMPASS_TERM = "radio compass"
+GUIDANCE_MAGNETIC_COMPASS_TERM = "magnetic compass"
+GUIDANCE_INCLINOMETER_TERM = "inclinometer"
+GUIDANCE_ASTRODOME_TERM = "astrodome"
+GUIDANCE_G_METER_TERM = "g-meter"
+GUIDANCE_ACCELEROMETER_TERM = "accelerometer"
+GUIDANCE_NAVIGATION_EQUIPMENT_TERM = "navigation equipment"
+GUIDANCE_NAVIGATIONAL_INSTRUMENTS_TERM = "navigational instruments"
 CONTROL_PANEL_TERM = "control panel"
 CONTROL_SYSTEM_TERM = "control system"
 CONTROL_FLIGHT_TERM = "flight control"
+CONTROL_INSTRUMENT_PANEL_TERM = "instrument panel"
+CONTROL_FLIGHT_INSTRUMENTS_TERM = "flight instruments"
+HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM = "typewriter"
 
 
 COMPUTING_FIELD_TERMS = {
@@ -49,29 +71,90 @@ COMPUTING_FIELD_TERMS = {
 }
 
 ELECTRONICS_FIELD_TERMS = {
-    "title": ("transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor"),
-    "topics": ("transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor", "electronics"),
-    "object_types": ("transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor"),
-    "narrative_texts": ("transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor", "electronics"),
-    "physical_descriptions": ("transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor"),
+    "title": (
+        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+        ELECTRONICS_RADAR_TERM, ELECTRONICS_RECEIVER_TERM,
+        ELECTRONICS_TRANSMITTER_TERM, ELECTRONICS_ANTENNA_TERM,
+    ),
+    "topics": (
+        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+        "electronics", ELECTRONICS_RADAR_TERM,
+    ),
+    "object_types": (
+        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+        ELECTRONICS_RADAR_TERM, ELECTRONICS_RECEIVER_TERM,
+        ELECTRONICS_TRANSMITTER_TERM, ELECTRONICS_ANTENNA_TERM,
+        ELECTRONICS_AVIONICS_TERM, ELECTRONICS_COMMUNICATION_SYSTEMS_TERM,
+    ),
+    "narrative_texts": (
+        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor", "electronics",
+        ELECTRONICS_RADAR_TERM, ELECTRONICS_RADIO_RECEIVER_TERM,
+        ELECTRONICS_RADIO_TRANSMITTER_TERM,
+    ),
+    "physical_descriptions": (
+        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+        ELECTRONICS_RADAR_TERM, ELECTRONICS_RADIO_RECEIVER_TERM,
+        ELECTRONICS_RADIO_TRANSMITTER_TERM,
+    ),
     "entities": ("transistor", "semiconductor"),
 }
 
 GUIDANCE_FIELD_TERMS = {
-    "title": ("guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilot"),
-    "topics": ("guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilot"),
-    "object_types": ("guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilot"),
-    "narrative_texts": ("guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilot"),
-    "physical_descriptions": ("guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilot"),
-    "entities": ("autopilot",),
+    "title": (
+        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, *GUIDANCE_AUTOPILOT_TERMS,
+        GUIDANCE_DIRECTIONAL_GYRO_TERM, GUIDANCE_GYROSCOPE_TERM,
+        GUIDANCE_RADIO_COMPASS_TERM, GUIDANCE_MAGNETIC_COMPASS_TERM,
+        GUIDANCE_INCLINOMETER_TERM, GUIDANCE_ASTRODOME_TERM,
+        GUIDANCE_G_METER_TERM, GUIDANCE_ACCELEROMETER_TERM,
+    ),
+    "topics": (
+        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, *GUIDANCE_AUTOPILOT_TERMS,
+        GUIDANCE_DIRECTIONAL_GYRO_TERM, GUIDANCE_RADIO_COMPASS_TERM,
+    ),
+    "object_types": (
+        "guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilots",
+        GUIDANCE_NAVIGATIONAL_INSTRUMENTS_TERM,
+    ),
+    "narrative_texts": (
+        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, GUIDANCE_NAVIGATION_EQUIPMENT_TERM,
+        *GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_DIRECTIONAL_GYRO_TERM,
+        GUIDANCE_GYROSCOPE_TERM, GUIDANCE_RADIO_COMPASS_TERM,
+        GUIDANCE_MAGNETIC_COMPASS_TERM, GUIDANCE_INCLINOMETER_TERM,
+        GUIDANCE_ASTRODOME_TERM, GUIDANCE_G_METER_TERM,
+        GUIDANCE_ACCELEROMETER_TERM,
+    ),
+    "physical_descriptions": (
+        "guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM,
+        *GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_DIRECTIONAL_GYRO_TERM,
+        GUIDANCE_GYROSCOPE_TERM, GUIDANCE_RADIO_COMPASS_TERM,
+        GUIDANCE_MAGNETIC_COMPASS_TERM, GUIDANCE_INCLINOMETER_TERM,
+        GUIDANCE_ASTRODOME_TERM, GUIDANCE_G_METER_TERM,
+        GUIDANCE_ACCELEROMETER_TERM,
+    ),
+    "entities": (*GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_GYROSCOPE_TERM, "compass"),
 }
 
 CONTROL_FIELD_TERMS = {
-    "title": (CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM, "instrumentation"),
-    "topics": (CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM, "instrumentation"),
-    "object_types": (CONTROL_PANEL_TERM, CONTROL_FLIGHT_TERM, "instrumentation"),
-    "narrative_texts": (CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM, "instrumentation"),
-    "physical_descriptions": (CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM, "instrumentation"),
+    "title": (
+        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+    ),
+    "topics": (
+        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+    ),
+    "object_types": (
+        CONTROL_PANEL_TERM, CONTROL_FLIGHT_TERM, CONTROL_FLIGHT_INSTRUMENTS_TERM,
+        "instrumentation",
+    ),
+    "narrative_texts": (
+        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+    ),
+    "physical_descriptions": (
+        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+    ),
     "entities": ("instrumentation",),
 }
 
@@ -91,6 +174,7 @@ HUMAN_MACHINE_INTERACTION_TERMS = (
     "user interface",
     "computer interface",
     HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
+    HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
 )
 HUMAN_MACHINE_INTERACTION_FIELD_TERMS = {
     "title": HUMAN_MACHINE_INTERACTION_TERMS,
@@ -99,19 +183,21 @@ HUMAN_MACHINE_INTERACTION_FIELD_TERMS = {
         HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
         HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
         HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
+        HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
     ),
     "narrative_texts": HUMAN_MACHINE_INTERACTION_TERMS,
     "physical_descriptions": (
         HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
         HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
         HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
+        HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
     ),
     "entities": (),
 }
 
 
 DEFAULT_POLICY = CorpusSelectionPolicy(
-    version="0.1",
+    version="0.2",
     domain_rules=(
         DomainRule(domain="computing", field_terms=COMPUTING_FIELD_TERMS),
         DomainRule(domain="electronics", field_terms=ELECTRONICS_FIELD_TERMS),

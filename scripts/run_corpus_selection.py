@@ -5,7 +5,7 @@ from smithsonian_rag.normalization.nasm import normalize_nasm
 from smithsonian_rag.normalization.nmah import normalize_nmah
 from smithsonian_rag.selection import CorpusSelector
 
-records = []
+canonical_records = []
 
 for path in sorted(Path("data/samples").rglob("*.json")):
     raw = json.loads(path.read_text(encoding="utf-8-sig"))
@@ -21,9 +21,9 @@ for path in sorted(Path("data/samples").rglob("*.json")):
     else:
         raise ValueError(f"Unsupported unit in {path}: {unit}")
 
-    records.append(canonical)
+    canonical_records.append(canonical)
 
-report = CorpusSelector().select_many(records)
+report = CorpusSelector().select_many(canonical_records)
 
 output = Path("build/corpus-selection-report.json")
 output.parent.mkdir(parents=True, exist_ok=True)

@@ -8,7 +8,7 @@
 search and grounded question answering over Smithsonian Open Access
 collections.
 
-**Project status:** Corpus Selection Policy v0.1 implemented; initial 200-record evaluation complete; selection-quality review in progress
+**Project status:** Corpus Selection Policy v0.2 implemented and evaluated on 200 local records; selection-quality review remains in progress
 
 The project is a portfolio-grade Retrieval-Augmented Generation (RAG)
 system built on public Smithsonian Open Access collection data.
@@ -1631,7 +1631,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 27. Current Status — Authoritative
 
-**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.1 implemented and evaluated on 200 local records; relevance review remains open.
+**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.2 implemented and evaluated on 200 local records; relevance review remains open.
 
 ### Completed
 
@@ -1647,15 +1647,15 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Content API identifier issue diagnosed and corrected
 - [x] Three NMAH search/detail comparisons completed
 - [x] D-016 baseline detail-enrichment decision recorded
-- [x] D-019 Corpus Selection Policy v0.1 implemented and tested
-- [x] Selection report generated for all 200 local NASM/NMAH records
+- [x] D-019 Corpus Selection Policy v0.2 implemented with matched-term provenance and positive regression tests
+- [x] Selection policy v0.2 evaluated on all 200 local NASM/NMAH records
 
 ### In progress / open
 
 - [x] Accept canonical `SmithsonianRecord` v0.1 conceptual schema
 - [x] Implement and validate unit-specific NASM/NMAH mapping rules
 - [x] Define narrative versus physical evidence representations
-- [ ] Review selection matches and likely false negatives; then finalize a coherent V1 corpus slice and sampling strategy
+- [ ] Review v0.2 matches for precision and false negatives; then finalize a coherent V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
 - [ ] Select embedding model, LLM, retrieval storage, and RAG framework based on requirements
@@ -1669,7 +1669,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 28. Step 1.4 — Canonical Domain Model and V1 Corpus Selection
 
-**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.1 implemented and evaluated on the existing 200-record sample. Selection-quality review remains in progress.
+**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.2 implemented and evaluated on the existing 200-record sample. Selection-quality review remains in progress.
 
 The canonical record model preserves source identity, provenance, structured metadata, distinct narrative and physical text, record-level rights, and per-media rights. The initial V1 domain spans computing, electronics, guidance, control, and human-machine interaction across NASM and NMAH.
 
@@ -1781,71 +1781,78 @@ Use offline unit tests and a batch validation report as separate quality checks:
 
 The 200-record convenience sample has **zero failures**, but the gate must be reassessed when corpus selection expands to new records and subject areas.
 
-## 31. Step 1.4.3 — Corpus Selection Policy v0.1 and Initial Evaluation
+## 31. Step 1.4.3 — Corpus Selection Policy v0.2 and Initial Evaluation
 
-**Status:** Policy implemented; first evaluation completed on the 200-record local convenience sample. Final corpus-selection criteria remain provisional pending record-level relevance review.
+**Status:** Policy v0.2 implemented and evaluated on the 200-record convenience sample. Final corpus criteria remain provisional pending manual review of the expanded matches.
 
-### D-019 — Corpus Selection Policy v0.1
+### D-019 — Corpus Selection Policy
 
-**Status:** Implemented and evaluated; pending relevance review before final corpus selection.
+**Status:** Implemented; v0.2 is the current baseline for evaluation.
 
-The baseline policy is deterministic and versioned (`0.1`). It applies explicit domain terms to canonical titles, topics, object types, narrative texts, physical descriptions, and entity names. NASM and NMAH use the same vocabulary and are measured separately.
+The policy is deterministic, versioned, and unit-aware. It applies field-specific terms to the canonical title, topics, object types, narrative texts, physical descriptions, and entity names. NASM and NMAH use the same vocabulary and have separate metrics. Decisions record the policy version, matched domains, exact matched term and canonical field, evidence class, and reason codes.
 
-Evidence is classified as:
+Evidence classes:
 
 - **A — Narrative evidence:** at least one non-blank canonical narrative text.
 - **B — Structured evidence:** no narrative text, but at least one usable physical description or structured metadata value.
 - **C — Insufficient evidence:** neither narrative nor usable structured evidence is present.
 
-A record is accepted only when it matches a domain and has A or B evidence. Generic `control` and `display` terms alone do not qualify. The baseline uses no arbitrary text-length threshold and no LLM-based classification. Every result retains the policy version, matched domains, acceptance status, evidence class, and reason codes.
+A record is accepted only when it matches a domain and has A or B evidence. There is no arbitrary text-length threshold and no LLM-based classification.
 
-### Initial evaluation — 200 local records
+### Policy refinement from manual sample review
 
-| Metric | Result |
-|---|---:|
-| Input records | 200 |
-| Domain matched | 8 |
-| Accepted | 8 (4%) |
-| Accepted with narrative evidence (A) | 8 |
-| Accepted with structured evidence (B) | 0 |
-| Excluded as insufficient evidence (C) | 0 |
-| Excluded as out of domain | 192 |
-| Evidence class A / B / C | 84 / 116 / 0 |
+The review of the eight v0.1 matches found no clear false positives, while inspection of excluded records identified likely missed aviation and electronics evidence. The vocabulary was refined to cover:
 
-| Owning unit | Input | Domain matched | Accepted | Selection rate |
-|---|---:|---:|---:|---:|
-| NASM | 100 | 6 | 6 | 6% |
-| NMAH | 100 | 2 | 2 | 2% |
+- Autopilot spellings `autopilot`, `automatic pilot`, and `auto pilot`.
+- Directional gyros, gyroscopes, radio and magnetic compasses, navigational instruments, flight instruments, inclinometers, accelerometers, drift meters, and astrodromes in suitable fields.
+- Radar, communication systems, receivers, transmitters, and antennas in suitable fields.
+- Instrument panels as cockpit and flight-test evidence.
+- Mechanical typewriters as HMI artifacts. This is an explicit scope choice: historic mechanical keyboards are included in the project's human-machine-interaction and consumer-technology coverage.
 
-Matched-domain distribution: `control` 5 records, `human_machine_interaction` 2, and `guidance` 1. No records matched `computing` or `electronics`.
+The policy intentionally does not match `stabilizer` by itself because the sample uses it for ordinary aircraft structure. A generic `Navigation` topic by itself is not sufficient; this avoids selecting an unrelated Galileo pendulum clock. Generic `control`, `display`, and `radio` terms are not used by themselves.
 
-Accepted records:
+The selection result schema now stores `matched_terms` with the domain, field, and matched phrase to support auditing.
 
-- NASM: `nasm_A19050003000`, `nasm_A19250008000`, `nasm_A19300012000`, `nasm_A19350058000`, `nasm_A19510004000`, `nasm_A19510007000`
-- NMAH: `nmah_850010`, `nmah_850018`
+### Evaluation — 200 local records
 
-### Interpretation and limits
+The 200 source records were reprocessed with policy v0.2. The machine-readable report is generated under `build/` and is not committed with the raw sample data.
 
-The result confirms that the policy runs across all 200 normalized records and produces unit-level metrics and explicit decisions. All eight matches have narrative evidence. The 116 B-class records were excluded because none matched the current domain vocabulary; no domain-matched record lacked evidence.
+| Metric | v0.1 | v0.2 |
+|---|---:|---:|
+| Input records | 200 | 200 |
+| Domain matched / accepted | 8 | 29 |
+| Accepted with narrative evidence (A) | 8 | 17 |
+| Accepted with structured evidence (B) | 0 | 12 |
+| Excluded as insufficient evidence (C) | 0 | 0 |
+| Excluded as out of domain | 192 | 171 |
+| Selection rate | 4.0% | 14.5% |
 
-The 4% rate describes this 100+100 convenience sample only. The sample was selected for data profiling and is not established as representative of the target technology domain or of the full Smithsonian collections. Do not use this rate to project the final corpus size. The lack of computing and electronics matches may reflect the sample or gaps in the initial vocabulary; it is not by itself evidence of an implementation defect.
+| Owning unit | Input | Accepted A | Accepted B | Accepted | Selection rate |
+|---|---:|---:|---:|---:|---:|
+| NASM | 100 | 14 | 11 | 25 | 25.0% |
+| NMAH | 100 | 3 | 1 | 4 | 4.0% |
 
-The report records matched domain names but not the exact matched terms or source text. Consequently, it is not sufficient by itself to determine whether each accepted record is a true positive or to identify missed relevant records among the exclusions.
+Accepted domain counts overlap where a record matches multiple domains: guidance 14, control 9, electronics 8, and human-machine interaction 4. No computing matches were found.
+
+### Interpretation and limitations
+
+The increase from 8 to 29 selected records confirms that v0.1 missed terms represented in the current sample, especially autopilot variants, navigation instruments, radio equipment, radar, and antennas. The updated policy also selects structured-only evidence and reports the precise matching field and term.
+
+All reported rates describe this existing 100+100 convenience sample only. It was assembled for data profiling and is not established as representative of the technology domain or of the full Smithsonian collections. Do not project the 14.5% rate to the final corpus size. The newly selected records still require manual precision review, especially records selected through broad but field-specific categories such as avionics and flight instruments.
 
 ### Execution and validation
 
-The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes `build/corpus-selection-report.json`, and must run with the repository root as its working directory. The command-line run from the root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
+The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes a JSON report under `build/`, and must run with the repository root as its working directory. The command-line run from the repository root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
 
-Seven focused selection test functions were invoked directly and passed in the implementation environment. The complete repository pytest suite was not run there because `pytest` was unavailable in that environment.
+Sixteen focused selection test functions were invoked directly and passed in the implementation environment. The full repository pytest suite was not run there because `pytest` was unavailable.
 
 ### Next steps
 
-1. Review the eight accepted raw records for domain relevance and false positives.
-2. Inspect a set of plausible domain-related exclusions, including B-class records, for false negatives and missing vocabulary.
-3. Add exact matched terms and source-field evidence to the selection report to make decisions easier to audit.
-4. Revise and version the policy only after this review, then rerun it and compare results by unit and domain.
-5. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
+1. Manually review the 29 v0.2 matches, prioritizing new structured-only records and matches from `avionics` or instrument-type metadata.
+2. Review plausible false negatives from the remaining excluded records and refine field-specific terms only where the source evidence supports them.
+3. Run the full repository pytest suite in the project environment.
+4. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — review match quality and missed candidates, then refine the versioned selection policy.
+**Resume point:** Step 1.4.3 — review v0.2 match precision and exclusions before finalizing the V1 corpus criteria.

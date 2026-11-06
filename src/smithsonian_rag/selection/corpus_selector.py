@@ -9,6 +9,7 @@ from smithsonian_rag.domain.models import SmithsonianRecord
 from smithsonian_rag.selection.models import (
     CorpusSelectionReport,
     EvidenceClass,
+    MatchedTerm,
     ReasonCode,
     SelectionResult,
     UnitSelectionMetrics,
@@ -67,18 +68,18 @@ class CorpusSelector:
     def __init__(self, policy: CorpusSelectionPolicy = DEFAULT_POLICY) -> None:
         self.policy = policy
 
-    def _matched_domains(self, record: SmithsonianRecord) -> list[str]:
+    def _matched_terms(self, record: SmithsonianRecord) -> list[MatchedTerm]:
         if record.unit_code not in self.policy.supported_units:
             return []
-        matches = []
+        matches: list[MatchedTerm] = []
         for rule in self.policy.domain_rules:
-            matched = any(
-                _has_term(_plain_text(getattr(record, field_name)), term)
-                for field_name, terms in rule.field_terms.items()
-                for term in terms
-            )
-            if matched:
-                matches.append(rule.domain)
+            for field_name, terms in rule.field_terms.items():
+                value = _plain_text(getattr(record, field_name))
+                matches.extend(
+                    MatchedTerm(domain=rule.domain, field=field_name, term=term)
+                    for term in terms
+                    if _has_term(value, term)
+                )
         return matches
 
     def _has_structured_evidence(self, record: SmithsonianRecord) -> bool:
@@ -89,7 +90,8 @@ class CorpusSelector:
 
     def select(self, record: SmithsonianRecord) -> SelectionResult:
         """Classify and decide one canonical record."""
-        domains = self._matched_domains(record)
+        matched_terms = self._matched_terms(record)
+        domains = list(dict.fromkeys(match.domain for match in matched_terms))
         has_narrative = any(text.content.strip() for text in record.narrative_texts)
         has_structured = self._has_structured_evidence(record)
         if has_narrative:
@@ -116,6 +118,7 @@ class CorpusSelector:
             accepted=accepted,
             evidence_class=evidence_class,
             matched_domains=domains,
+            matched_terms=matched_terms,
             reason_codes=reasons,
             policy_version=self.policy.version,
         )
