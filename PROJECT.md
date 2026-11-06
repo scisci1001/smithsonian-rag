@@ -1669,6 +1669,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Retain models when metadata explicitly identifies an in-scope technology as their subject; electric-watch models qualify
 - [x] Limit V1 guidance/navigation to aviation and spaceflight; maritime timekeeping and terrestrial surveying are excluded
 - [x] Review remaining sample candidates: include the instrument sensor and pilot-controlled propeller; keep the unsupported barograph excluded
+- [x] Complete a preliminary Q01–Q15 coverage check against the 43 v0.5-selected records and the 200-record sample
+- [ ] Acquire a targeted second sample covering AGC, Gemini/Apollo computing, Apollo 11 objects, redundancy, digital computing, and documented consumer-technology transfer
 - [ ] Review other plausible false negatives; then finalize a coherent V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
 - [ ] Investigate NMAH media access further only if required for V1
@@ -1687,7 +1689,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 The canonical record model preserves source identity, provenance, structured metadata, distinct narrative and physical text, record-level rights, and per-media rights. The initial V1 domain spans computing, electronics, guidance, control, and human-machine interaction across NASM and NMAH.
 
-The deterministic policy and its first evaluation are recorded in Section 31. The measured 4% selection rate applies only to the current convenience sample; it does not establish the final corpus size or representativeness.
+The deterministic policy and its evaluations are recorded in Section 31. The measured v0.5 selection rate applies only to the current convenience sample; it does not establish the final corpus size or representativeness. A preliminary question-coverage check found that the current sample lacks the Apollo/Gemini evidence required for several core questions; see [`q01-q15-v05-coverage.md`](q01-q15-v05-coverage.md).
 
 Embeddings, vector storage, and LLM-based enrichment remain deferred until the selected corpus and research-question coverage have been reviewed.
 
@@ -1942,8 +1944,8 @@ Twenty-seven focused selection test functions and three report-filename test fun
 1. Continue reviewing plausible false negatives and refine field-specific terms only where source evidence supports them.
 2. If a model comparison remains useful, run a structured-output API batch against a human-reviewed sample; no API classification has been run yet.
 3. Run the full repository pytest suite in the project environment.
-4. Evaluate a more representative sample and check answerability of Q01–Q15 before selecting the V1 corpus size.
+4. Acquire a targeted second sample for the gaps in [`q01-q15-v05-coverage.md`](q01-q15-v05-coverage.md), then re-check Q01–Q15 before selecting the V1 corpus size.
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — continue broader-sample false-negative review under the clarified model-object, platform-record, aviation/spaceflight, and aircraft-control boundaries before finalizing V1 corpus criteria.
+**Resume point:** Step 1.4.3 — use the Q01–Q15 gap table to acquire a targeted Apollo/Gemini and technology-transfer sample, then repeat the coverage assessment before finalizing V1 corpus criteria.
