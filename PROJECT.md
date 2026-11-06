@@ -1653,6 +1653,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Selection policy v0.3 evaluated on all 200 local NASM/NMAH records
 - [x] D-019 v0.4 adds electric watches and aircraft instrument evidence; G-meter is classified as control instrumentation
 - [x] Selection policy v0.4 evaluated on all 200 local NASM/NMAH records
+- [x] Selection runner names reports from the active policy version (`0.4` → `corpus-selection-report-v04.json`)
 
 ### In progress / open
 
@@ -1908,9 +1909,9 @@ Manual review confirmed that all 13 additions have direct evidence for the appro
 
 ### Execution and validation
 
-The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes a JSON report under `build/`, and must run with the repository root as its working directory. The command-line run from the repository root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
+The selection script reads JSON records from `data/samples/nasm/` and `data/samples/nmah/`, writes a versioned JSON report under `build/`, and must run with the repository root as its working directory. The filename is `corpus-selection-report-v{policy version without dots}.json`, so policy version `0.4` produces `corpus-selection-report-v04.json`. The version is taken from the generated selection report, ensuring the filename matches the policy actually used. The command-line run from the repository root processed all 200 records. An IntelliJ Run configuration with a different working directory processed zero records; set its working directory to the repository root when using the IDE.
 
-Twenty-two focused selection test functions were invoked directly and passed after the v0.4 change. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
+Twenty-two focused selection test functions and three report-filename test functions were invoked directly and passed. An end-to-end run processed all 200 records and wrote `build/corpus-selection-report-v04.json`. The full repository pytest suite could not be run in this environment because `pytest` is unavailable.
 
 ### Next steps
 
