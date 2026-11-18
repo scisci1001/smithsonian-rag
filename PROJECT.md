@@ -8,7 +8,7 @@
 search and grounded question answering over Smithsonian Open Access
 collections.
 
-**Project status:** Corpus Selection Policy v0.5 implemented and evaluated on 200 local records; electric watches and aircraft instruments/control components are included by explicit scope decision
+**Project status:** Corpus Selection Policy v0.5 evaluated on 200 local records; 40-record stratified selection-quality review completed with provisional labels approved; v0.6 error analysis and targeted corpus acquisition pending
 
 The project is a portfolio-grade Retrieval-Augmented Generation (RAG)
 system built on public Smithsonian Open Access collection data.
@@ -1631,7 +1631,7 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 27. Current Status — Authoritative
 
-**Project state:** Canonical model and normalization completed; Corpus Selection Policy v0.5 implemented and evaluated on 200 local records; the v0.2 false positive is corrected and the approved electronics/instrumentation scope is included.
+**Project state:** Canonical normalization completed; Corpus Selection Policy v0.5 evaluated on 200 local records; 40-record stratified selection-quality review completed with approved provisional labels. Targeted v0.6 refinement and a second domain-focused sample remain open.
 
 ### Completed
 
@@ -1656,6 +1656,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] D-019 v0.5 adds direct temperature-sensor and controllable-pitch aircraft-control evidence
 - [x] Selection policy v0.5 evaluated on all 200 local NASM/NMAH records
 - [x] Selection runner names reports from the active policy version (`0.5` → `corpus-selection-report-v05.json`)
+- [x] Step 1.4.4: generated deterministic 40-record selection-review sample (20 accepted / 20 excluded)
+- [x] Reviewed and approved provisional relevance labels (14 relevant, 24 not relevant, 2 uncertain); original selection decisions preserved
 
 ### In progress / open
 
@@ -1670,6 +1672,8 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 - [x] Limit V1 guidance/navigation to aviation and spaceflight; maritime timekeeping and terrestrial surveying are excluded
 - [x] Review remaining sample candidates: include the instrument sensor and pilot-controlled propeller; keep the unsupported barograph excluded
 - [x] Complete a preliminary Q01–Q15 coverage check against the 43 v0.5-selected records and the 200-record sample
+- [ ] Adjudicate the four provisional false positives and two uncertain cases against prior explicit scope decisions and full records
+- [ ] Develop and regression-test backward-compatible Corpus Selection Policy v0.6 only after adjudication
 - [ ] Acquire a targeted second sample covering AGC, Gemini/Apollo computing, Apollo 11 objects, redundancy, digital computing, and documented consumer-technology transfer
 - [ ] Review other plausible false negatives; then finalize a coherent V1 corpus slice and sampling strategy
 - [ ] Validate the representative research questions against the selected corpus
@@ -1685,11 +1689,11 @@ The inspector compares selected summary fields, not a complete raw-JSON diff. Al
 
 ## 28. Step 1.4 — Canonical Domain Model and V1 Corpus Selection
 
-**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.5 implemented and evaluated on the existing 200-record sample. Manual review of v0.2/v0.4/v0.5 additions is complete; broader-sample false-negative review remains open.
+**Status:** Canonical model and normalization completed; Corpus Selection Policy v0.5 evaluated on the existing 200-record sample. Step 1.4.4 stratified quality review is complete with approved provisional labels; case adjudication, v0.6 refinement, and broader-sample false-negative review remain open.
 
 The canonical record model preserves source identity, provenance, structured metadata, distinct narrative and physical text, record-level rights, and per-media rights. The initial V1 domain spans computing, electronics, guidance, control, and human-machine interaction across NASM and NMAH.
 
-The deterministic policy and its evaluations are recorded in Section 31. The measured v0.5 selection rate applies only to the current convenience sample; it does not establish the final corpus size or representativeness. A preliminary question-coverage check found that the current sample lacks the Apollo/Gemini evidence required for several core questions; see [`q01-q15-v05-coverage.md`](q01-q15-v05-coverage.md).
+The deterministic policy and its evaluations are recorded in Section 31; the latest stratified quality review is in Section 32. The measured v0.5 selection rate applies only to the current convenience sample; it does not establish the final corpus size or representativeness. A preliminary question-coverage check found that the current sample lacks the Apollo/Gemini evidence required for several core questions; see [`q01-q15-v05-coverage.md`](q01-q15-v05-coverage.md).
 
 Embeddings, vector storage, and LLM-based enrichment remain deferred until the selected corpus and research-question coverage have been reviewed.
 
@@ -1948,4 +1952,50 @@ Twenty-seven focused selection test functions and three report-filename test fun
 
 **Deferred:** embeddings, vector database, LLM integration, RAG framework, and production ingestion architecture.
 
-**Resume point:** Step 1.4.3 — use the Q01–Q15 gap table to acquire a targeted Apollo/Gemini and technology-transfer sample, then repeat the coverage assessment before finalizing V1 corpus criteria.
+**Historical resume point (superseded by Section 32):** Use the Q01–Q15 gap table to acquire a targeted Apollo/Gemini and technology-transfer sample, then repeat the coverage assessment before finalizing V1 corpus criteria.
+
+
+---
+
+## 32. Step 1.4.4 — Selection Quality Evaluation and Provisional Label Review
+
+**Status:** Completed for the 40-record stratified review; v0.6 refinement pending.
+
+### Review method and artifacts
+
+The existing `CorpusSelector` and public `selection` package interfaces were preserved. A separate `scripts/prepare_selection_review.py` utility and its tests were introduced for a reproducible case-review sample. The utility reads `build/corpus-selection-report-v05.json`, stratifies by selection decision, owning unit, and evidence class, and uses a stable hash ranking. It produces `build/selection-review-v05.csv`, enriched with titles and truncated source-text previews when local raw JSON files are available.
+
+The review contains 40 distinct records: 20 accepted and 20 excluded. By unit, the sample contains 16 accepted NASM, 4 accepted NMAH, 8 excluded NASM, and 12 excluded NMAH records. These allocations are for error inspection, not collection-level estimation.
+
+The review file retains original policy decisions, matched terms, and reason codes. Only `human_label` and `review_notes` were filled in. The labels were produced as an AI-assisted provisional review from available titles, terms, and text excerpts (limited to 500 characters), then explicitly accepted by the project owner. They have **not** been independently verified against all full source records.
+
+### Accepted provisional labels
+
+| Policy v0.5 decision | RELEVANT | NOT_RELEVANT | UNCERTAIN | Total |
+|---|---:|---:|---:|---:|
+| Accepted | 14 | 4 | 2 | 20 |
+| Excluded | 0 | 20 | 0 | 20 |
+| **Total** | **14** | **24** | **2** | **40** |
+
+Four accepted records were provisionally flagged as potential false positives: `nasm_A19510004000`, `nasm_A19250008000`, `nasm_A19280002000`, and `nasm_A19490051000`. Two accepted records remain uncertain: `nasm_A19400027000` and `nmah_1203287`.
+
+Among the 18 accepted records with decisive provisional labels, 14 were marked relevant (14/18 = **77.8%**). This is a **descriptive, non-independent review statistic**, not an unbiased corpus precision estimate. The deliberately balanced 20/20 review sample and the underlying ID-sorted convenience sample do not support population-level precision or recall claims. In particular, the absence of observed false negatives among 20 reviewed exclusions does not establish recall.
+
+### Scope and evidence reconciliation
+
+The original v0.5 documentation explicitly includes electric watches and directly evidenced aircraft instruments and control components. The newly approved provisional labels may conflict with those decisions in individual cases, notably the controllable-pitch propeller (`nasm_A19400027000`) and electric-watch model (`nmah_1203287`), both marked UNCERTAIN. These provisional labels **do not automatically revoke** the existing scope decisions.
+
+Before changing selection rules, review the six disputed cases against full raw EDAN records, the intended V1 question set, and the earlier manual-review notes. Separate genuinely irrelevant whole-aircraft context from in-scope onboard systems, and avoid broad exclusions that would silently remove accepted technologies. Record adjudicated decisions and add positive and negative regression tests.
+
+### Next implementation — Step 1.4.5, Policy v0.6 error analysis
+
+1. Adjudicate four potential false positives and two uncertain cases using complete source records and documented scope rules.
+2. Identify which matching fields or phrases caused erroneous selections; prefer narrow, evidence-backed changes to `CorpusSelectionPolicy`.
+3. Preserve `CorpusSelector`, `CorpusSelectionReport`, `SelectionResult`, `MatchedTerm`, `ReasonCode`, `DEFAULT_POLICY`, and package exports. Do not replace existing modules with simplified parallel implementations.
+4. Add regression fixtures for the six disputed cases plus previously confirmed positive and negative cases.
+5. Compare v0.5 and proposed v0.6 on the same 200-record sample, reporting changed record IDs and their reasons.
+6. Acquire a targeted Apollo/Gemini and consumer-technology-transfer sample to address the Q01–Q15 coverage gaps; perform further false-negative review before finalizing corpus criteria.
+
+**Decision status:** The provisional relevance labels are approved as an error-analysis input. Policy v0.6 is **proposed, not yet implemented or accepted**. Embeddings, vector storage, LLM integration, and production ingestion remain deferred.
+
+**Authoritative resume point:** Step 1.4.5 — adjudicate disputed v0.5 selection cases, then design the smallest backward-compatible v0.6 policy change and regression suite.
