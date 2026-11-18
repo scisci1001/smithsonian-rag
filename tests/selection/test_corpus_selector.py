@@ -23,7 +23,7 @@ def test_narrative_domain_record_is_accepted_with_reasons() -> None:
     assert result.evidence_class is EvidenceClass.NARRATIVE
     assert result.matched_domains == ["computing", "guidance"]
     assert result.reason_codes == [ReasonCode.DOMAIN_MATCH, ReasonCode.NARRATIVE_EVIDENCE]
-    assert result.policy_version == "0.5"
+    assert result.policy_version == "0.6"
     assert {match.term for match in result.matched_terms} == {"computer", "guidance"}
 
 

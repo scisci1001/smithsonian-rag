@@ -234,7 +234,7 @@ HUMAN_MACHINE_INTERACTION_FIELD_TERMS = {
 
 
 DEFAULT_POLICY = CorpusSelectionPolicy(
-    version="0.5",
+    version="0.6",
     domain_rules=(
         DomainRule(domain="computing", field_terms=COMPUTING_FIELD_TERMS),
         DomainRule(domain="electronics", field_terms=ELECTRONICS_FIELD_TERMS),

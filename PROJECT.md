@@ -1959,7 +1959,7 @@ Twenty-seven focused selection test functions and three report-filename test fun
 
 ## 32. Step 1.4.4 — Selection Quality Evaluation and Provisional Label Review
 
-**Status:** Completed for the 40-record stratified review; v0.6 refinement pending.
+**Status:** Completed for the 40-record stratified review; v0.6 candidate implementation and 200-record evaluation completed; targeted adjudication pending.
 
 ### Review method and artifacts
 
@@ -1996,6 +1996,80 @@ Before changing selection rules, review the six disputed cases against full raw 
 5. Compare v0.5 and proposed v0.6 on the same 200-record sample, reporting changed record IDs and their reasons.
 6. Acquire a targeted Apollo/Gemini and consumer-technology-transfer sample to address the Q01–Q15 coverage gaps; perform further false-negative review before finalizing corpus criteria.
 
-**Decision status:** The provisional relevance labels are approved as an error-analysis input. Policy v0.6 is **proposed, not yet implemented or accepted**. Embeddings, vector storage, LLM integration, and production ingestion remain deferred.
+**Decision status (updated in Section 33):** The provisional relevance labels are approved as an error-analysis input. Policy v0.6 is now implemented and evaluated as a **candidate**, not yet accepted as the baseline. Embeddings, vector storage, LLM integration, and production ingestion remain deferred.
 
-**Authoritative resume point:** Step 1.4.5 — adjudicate disputed v0.5 selection cases, then design the smallest backward-compatible v0.6 policy change and regression suite.
+**Historical resume point (superseded by Section 33):** Step 1.4.5 — adjudicate disputed v0.5 selection cases and evaluate a backward-compatible v0.6 policy change.
+
+
+---
+
+## 33. Step 1.4.5 — Corpus Selection Policy v0.6 Candidate Evaluation
+
+**Status:** Candidate implementation and local 200-record evaluation completed; targeted record adjudication pending. **v0.6 is not yet the accepted production/baseline policy.**
+
+### Scope decision — contextual aircraft records
+
+**Status:** Accepted
+
+Complete aircraft may remain eligible for the V1 corpus when their source records contain **substantive evidence** of in-scope onboard technologies, including guidance, avionics, radar, control systems, and instrumentation. A passing mention of a gauge or instrument is not sufficient on its own. Do not impose a blanket aircraft exclusion or hard-code record-ID exclusions. Preserve the existing public selection interfaces and matched-term provenance.
+
+### Candidate policy change
+
+A targeted v0.6 refinement limits acceptance of complete-aircraft records whose only matches are incidental instrumentation phrases. Standalone instruments and clearly evidenced onboard technologies remain eligible. The patch included regression tests; the previous local implementation report stated 33 focused tests passed. This test count has not been independently re-run against the user's current full repository in this checkpoint.
+
+### Observed v0.5 → v0.6 comparison
+
+Both reports cover the same 200-record NASM/NMAH convenience sample.
+
+| Metric | v0.5 | v0.6 | Delta |
+|---|---:|---:|---:|
+| Input records | 200 | 200 | 0 |
+| Accepted | 43 | 39 | -4 |
+| Accepted narrative (A) | 19 | 15 | -4 |
+| Accepted structured (B) | 24 | 24 | 0 |
+| Excluded out of domain | 157 | 161 | +4 |
+| Excluded insufficient | 0 | 0 | 0 |
+| NASM accepted | 34 | 30 | -4 |
+| NMAH accepted | 9 | 9 | 0 |
+| Selection rate | 21.5% | 19.5% | -2.0 pp |
+
+The v0.6 report is generated at `build/corpus-selection-report-v06.json`. These are **sample-specific selection counts**, not evidence of corpus-wide precision or recall improvement.
+
+### Record-level decision changes
+
+The four records that changed from accepted in v0.5 to excluded in v0.6 are:
+
+| Record ID | v0.5 matched evidence | v0.6 decision |
+|---|---|---|
+| `nasm_A19250008000` | `instrumentation`, `oil pressure` | Excluded |
+| `nasm_A19280002000` | `oil temperature`, `oil pressure`, `tachometer`, `fuel quantity` | Excluded |
+| `nasm_A19490051000` | `oil temperature`, `oil pressure`, `tachometer` | Excluded |
+| `nasm_A19510007000` | `instrumentation` | Excluded |
+
+No previously excluded record was newly accepted in the v0.6 report. All four changes are NASM class-A records; the NMAH and structured-evidence totals are unchanged.
+
+**Important discrepancy:** The fourth removed record is `nasm_A19510007000`, **not** `nasm_A19510004000` (Fowler-Gage Biplane), which was provisionally flagged in the 40-record review. Fowler-Gage remains accepted because of a `control system` narrative match. This mismatch requires explicit adjudication, not a claim that all four provisional false positives were fixed.
+
+The two previously uncertain records remain accepted:
+
+- `nasm_A19400027000` — controllable-pitch propeller (control, narrative A).
+- `nmah_1203287` — electric-watch model (electronics, structured B).
+
+### Quality gate and limitations
+
+- Verify the four removals against complete EDAN source records, especially `nasm_A19510007000`, before treating them as correct exclusions.
+- Review Fowler-Gage and other retained whole-aircraft contextual matches against the accepted substantive-evidence rule.
+- Resolve the two uncertain records using the full source data and existing scope decisions.
+- Confirm no useful standalone instrumentation or substantive avionics evidence was lost; add or retain positive and negative regression cases.
+- Preserve the public `CorpusSelector`, `CorpusSelectionPolicy`, `CorpusSelectionReport`, `SelectionResult`, `MatchedTerm`, `ReasonCode`, `DEFAULT_POLICY`, and `selection/__init__.py` exports.
+- The earlier 40-case review was stratified, AI-assisted, and excerpt-based; approved provisional labels are not independent gold-standard annotations. No collection-level precision or recall claim is justified.
+
+### Next steps
+
+1. Perform targeted full-record adjudication of the four v0.6 removals, the retained Fowler-Gage case, and the two uncertain records.
+2. If the changes are supported, accept v0.6 as the baseline and update the policy regression suite; otherwise make a narrower follow-up adjustment.
+3. Run the full Python 3.13 test suite in the repository environment (`p313 -m pytest`).
+4. Acquire a targeted second NASM/NMAH sample covering Apollo Guidance Computer, Gemini/Apollo computing, Apollo 11 artifacts, redundancy, digital computing, and consumer-technology transfer.
+5. Reassess Q01–Q15 answerability and false negatives on the expanded sample before finalizing V1 corpus size and ingestion architecture.
+
+**Authoritative resume point:** Adjudicate the changed and disputed v0.6 records against complete source evidence; then proceed to targeted Apollo/Gemini sampling.

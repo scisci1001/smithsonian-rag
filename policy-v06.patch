@@ -1,0 +1,878 @@
+--- a/src/smithsonian_rag/selection/policy.py
++++ b/src/smithsonian_rag/selection/policy.py
+@@ -1,248 +1,248 @@
+-"""Versioned, deterministic matching terms for the V1 corpus policy."""
+-from __future__ import annotations
+-
+-from pydantic import BaseModel, ConfigDict
+-
+-
+-class DomainRule(BaseModel):
+-    """A domain and the canonical fields where its terms may match."""
+-
+-    model_config = ConfigDict(extra="forbid", frozen=True)
+-
+-    domain: str
+-    field_terms: dict[str, tuple[str, ...]]
+-
+-
+-class CorpusSelectionPolicy(BaseModel):
+-    """Immutable-in-practice policy definition; update the version on edits."""
+-
+-    model_config = ConfigDict(extra="forbid", frozen=True)
+-
+-    version: str
+-    supported_units: tuple[str, ...] = ("NASM", "NMAH")
+-    domain_rules: tuple[DomainRule, ...]
+-    evidence_fields: tuple[str, ...] = (
+-        "physical_descriptions",
+-        "object_types",
+-        "topics",
+-        "entities",
+-        "dates",
+-        "places",
+-        "identifiers",
+-    )
+-
+-
+-ELECTRONICS_INTEGRATED_CIRCUIT_TERM = "integrated circuit"
+-ELECTRONICS_RADAR_TERM = "radar"
+-ELECTRONICS_RECEIVER_TERM = "receiver"
+-ELECTRONICS_TRANSMITTER_TERM = "transmitter"
+-ELECTRONICS_ANTENNA_TERM = "antenna"
+-ELECTRONICS_AVIONICS_TERM = "avionics"
+-ELECTRONICS_COMMUNICATION_SYSTEMS_TERM = "communication systems"
+-ELECTRONICS_RADIO_RECEIVER_TERM = "radio receiver"
+-ELECTRONICS_RADIO_TRANSMITTER_TERM = "radio transmitter"
+-ELECTRONICS_VOLTMETER_TERM = "voltmeter"
+-ELECTRONICS_AMMETER_TERM = "ammeter"
+-ELECTRONICS_ELECTRIC_WATCH_TERMS = (
+-    "electric watch",
+-    "watch electric",
+-    "electric wristwatch",
+-    "wristwatch electric",
+-    "wristwatch model electric",
+-)
+-GUIDANCE_NAVIGATION_SYSTEM_TERM = "navigation system"
+-GUIDANCE_AUTOPILOT_TERMS = ("autopilot", "automatic pilot", "auto pilot")
+-GUIDANCE_DIRECTIONAL_GYRO_TERM = "directional gyro"
+-GUIDANCE_GYROSCOPE_TERM = "gyroscope"
+-GUIDANCE_RADIO_COMPASS_TERM = "radio compass"
+-GUIDANCE_MAGNETIC_COMPASS_TERM = "magnetic compass"
+-GUIDANCE_COMPASS_TERM = "compass"
+-GUIDANCE_DRIFT_METER_TERM = "drift meter"
+-GUIDANCE_INCLINOMETER_TERM = "inclinometer"
+-GUIDANCE_ASTRODOME_TERM = "astrodome"
+-GUIDANCE_NAVIGATION_EQUIPMENT_TERM = "navigation equipment"
+-CONTROL_PANEL_TERM = "control panel"
+-CONTROL_SYSTEM_TERM = "control system"
+-CONTROL_FLIGHT_TERM = "flight control"
+-CONTROL_INSTRUMENT_PANEL_TERM = "instrument panel"
+-CONTROL_FLIGHT_INSTRUMENTS_TERM = "flight instruments"
+-CONTROL_G_METER_TERM = "g-meter"
+-CONTROL_ACCELEROMETER_TERM = "accelerometer"
+-CONTROL_FLIGHT_INSTRUMENT_TERMS = (
+-    "oil temperature",
+-    "oil pressure",
+-    "fuel pressure",
+-    "indicator temperature",
+-    "tachometer",
+-    "fuel quantity",
+-    "temperature sensing",
+-    "controllable pitch propeller",
+-)
+-HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM = "typewriter"
+-
+-
+-COMPUTING_FIELD_TERMS = {
+-    "title": ("computer", "processor", "calculator", "microcomputer"),
+-    "topics": ("computer", "computing", "processor", "calculator", "microcomputer"),
+-    "object_types": ("computer", "calculator", "microcomputer"),
+-    "narrative_texts": ("computer", "computing", "processor", "calculator", "microcomputer"),
+-    "physical_descriptions": ("computer", "processor", "calculator", "microcomputer"),
+-    "entities": ("computer", "processor", "calculator"),
+-}
+-
+-ELECTRONICS_FIELD_TERMS = {
+-    "title": (
+-        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+-        ELECTRONICS_RADAR_TERM, ELECTRONICS_RECEIVER_TERM,
+-        ELECTRONICS_TRANSMITTER_TERM, ELECTRONICS_ANTENNA_TERM,
+-        ELECTRONICS_VOLTMETER_TERM, ELECTRONICS_AMMETER_TERM,
+-        *ELECTRONICS_ELECTRIC_WATCH_TERMS,
+-    ),
+-    "topics": (
+-        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+-        "electronics", ELECTRONICS_RADAR_TERM,
+-        *ELECTRONICS_ELECTRIC_WATCH_TERMS,
+-    ),
+-    "object_types": (
+-        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+-        ELECTRONICS_RADAR_TERM, ELECTRONICS_RECEIVER_TERM,
+-        ELECTRONICS_TRANSMITTER_TERM, ELECTRONICS_ANTENNA_TERM,
+-        ELECTRONICS_AVIONICS_TERM, ELECTRONICS_COMMUNICATION_SYSTEMS_TERM,
+-        ELECTRONICS_VOLTMETER_TERM, ELECTRONICS_AMMETER_TERM,
+-        *ELECTRONICS_ELECTRIC_WATCH_TERMS,
+-    ),
+-    "narrative_texts": (
+-        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor", "electronics",
+-        ELECTRONICS_RADAR_TERM, ELECTRONICS_RADIO_RECEIVER_TERM,
+-        ELECTRONICS_RADIO_TRANSMITTER_TERM, ELECTRONICS_VOLTMETER_TERM,
+-        ELECTRONICS_AMMETER_TERM, *ELECTRONICS_ELECTRIC_WATCH_TERMS,
+-    ),
+-    "physical_descriptions": (
+-        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
+-        ELECTRONICS_RADAR_TERM, ELECTRONICS_RADIO_RECEIVER_TERM,
+-        ELECTRONICS_RADIO_TRANSMITTER_TERM, ELECTRONICS_VOLTMETER_TERM,
+-        ELECTRONICS_AMMETER_TERM, *ELECTRONICS_ELECTRIC_WATCH_TERMS,
+-    ),
+-    "entities": ("transistor", "semiconductor"),
+-}
+-
+-GUIDANCE_FIELD_TERMS = {
+-    "title": (
+-        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, *GUIDANCE_AUTOPILOT_TERMS,
+-        GUIDANCE_DIRECTIONAL_GYRO_TERM, GUIDANCE_GYROSCOPE_TERM,
+-        GUIDANCE_RADIO_COMPASS_TERM, GUIDANCE_MAGNETIC_COMPASS_TERM,
+-        GUIDANCE_COMPASS_TERM, GUIDANCE_DRIFT_METER_TERM,
+-        GUIDANCE_INCLINOMETER_TERM, GUIDANCE_ASTRODOME_TERM,
+-    ),
+-    "topics": (
+-        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, *GUIDANCE_AUTOPILOT_TERMS,
+-        GUIDANCE_DIRECTIONAL_GYRO_TERM, GUIDANCE_RADIO_COMPASS_TERM,
+-        GUIDANCE_COMPASS_TERM, GUIDANCE_DRIFT_METER_TERM,
+-    ),
+-    "object_types": (
+-        "guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilots",
+-    ),
+-    "narrative_texts": (
+-        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, GUIDANCE_NAVIGATION_EQUIPMENT_TERM,
+-        *GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_DIRECTIONAL_GYRO_TERM,
+-        GUIDANCE_GYROSCOPE_TERM, GUIDANCE_RADIO_COMPASS_TERM,
+-        GUIDANCE_MAGNETIC_COMPASS_TERM, GUIDANCE_COMPASS_TERM,
+-        GUIDANCE_DRIFT_METER_TERM, GUIDANCE_INCLINOMETER_TERM,
+-        GUIDANCE_ASTRODOME_TERM,
+-    ),
+-    "physical_descriptions": (
+-        "guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM,
+-        *GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_DIRECTIONAL_GYRO_TERM,
+-        GUIDANCE_GYROSCOPE_TERM, GUIDANCE_RADIO_COMPASS_TERM,
+-        GUIDANCE_MAGNETIC_COMPASS_TERM, GUIDANCE_COMPASS_TERM,
+-        GUIDANCE_DRIFT_METER_TERM, GUIDANCE_INCLINOMETER_TERM,
+-        GUIDANCE_ASTRODOME_TERM,
+-    ),
+-    "entities": (*GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_GYROSCOPE_TERM, "compass"),
+-}
+-
+-CONTROL_FIELD_TERMS = {
+-    "title": (
+-        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+-        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+-        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
+-        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
+-    ),
+-    "topics": (
+-        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+-        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+-        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
+-        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
+-    ),
+-    "object_types": (
+-        CONTROL_PANEL_TERM, CONTROL_FLIGHT_TERM, CONTROL_FLIGHT_INSTRUMENTS_TERM,
+-        "instrumentation",
+-        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
+-        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
+-    ),
+-    "narrative_texts": (
+-        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+-        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+-        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
+-        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
+-    ),
+-    "physical_descriptions": (
+-        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
+-        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
+-        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
+-        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
+-    ),
+-    "entities": ("instrumentation",),
+-}
+-
+-HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM = "keyboard"
+-HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM = "display unit"
+-HUMAN_MACHINE_INTERACTION_TERMINAL_TERM = "terminal"
+-HUMAN_MACHINE_INTERACTION_TERMS = (
+-    HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
+-    "computer display",
+-    "flight display",
+-    "cockpit display",
+-    "electronic display",
+-    "crt display",
+-    HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
+-    "human machine interface",
+-    "human computer interface",
+-    "user interface",
+-    "computer interface",
+-    HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
+-    HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
+-)
+-HUMAN_MACHINE_INTERACTION_FIELD_TERMS = {
+-    "title": HUMAN_MACHINE_INTERACTION_TERMS,
+-    "topics": HUMAN_MACHINE_INTERACTION_TERMS,
+-    "object_types": (
+-        HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
+-        HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
+-        HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
+-        HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
+-    ),
+-    "narrative_texts": HUMAN_MACHINE_INTERACTION_TERMS,
+-    "physical_descriptions": (
+-        HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
+-        HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
+-        HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
+-        HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
+-    ),
+-    "entities": (),
+-}
+-
+-
+-DEFAULT_POLICY = CorpusSelectionPolicy(
+-    version="0.5",
+-    domain_rules=(
+-        DomainRule(domain="computing", field_terms=COMPUTING_FIELD_TERMS),
+-        DomainRule(domain="electronics", field_terms=ELECTRONICS_FIELD_TERMS),
+-        DomainRule(domain="guidance", field_terms=GUIDANCE_FIELD_TERMS),
+-        DomainRule(domain="control", field_terms=CONTROL_FIELD_TERMS),
+-        DomainRule(
+-            domain="human_machine_interaction",
+-            field_terms=HUMAN_MACHINE_INTERACTION_FIELD_TERMS,
+-        ),
+-    ),
+-)
++"""Versioned, deterministic matching terms for the V1 corpus policy."""
++from __future__ import annotations
++
++from pydantic import BaseModel, ConfigDict
++
++
++class DomainRule(BaseModel):
++    """A domain and the canonical fields where its terms may match."""
++
++    model_config = ConfigDict(extra="forbid", frozen=True)
++
++    domain: str
++    field_terms: dict[str, tuple[str, ...]]
++
++
++class CorpusSelectionPolicy(BaseModel):
++    """Immutable-in-practice policy definition; update the version on edits."""
++
++    model_config = ConfigDict(extra="forbid", frozen=True)
++
++    version: str
++    supported_units: tuple[str, ...] = ("NASM", "NMAH")
++    domain_rules: tuple[DomainRule, ...]
++    evidence_fields: tuple[str, ...] = (
++        "physical_descriptions",
++        "object_types",
++        "topics",
++        "entities",
++        "dates",
++        "places",
++        "identifiers",
++    )
++
++
++ELECTRONICS_INTEGRATED_CIRCUIT_TERM = "integrated circuit"
++ELECTRONICS_RADAR_TERM = "radar"
++ELECTRONICS_RECEIVER_TERM = "receiver"
++ELECTRONICS_TRANSMITTER_TERM = "transmitter"
++ELECTRONICS_ANTENNA_TERM = "antenna"
++ELECTRONICS_AVIONICS_TERM = "avionics"
++ELECTRONICS_COMMUNICATION_SYSTEMS_TERM = "communication systems"
++ELECTRONICS_RADIO_RECEIVER_TERM = "radio receiver"
++ELECTRONICS_RADIO_TRANSMITTER_TERM = "radio transmitter"
++ELECTRONICS_VOLTMETER_TERM = "voltmeter"
++ELECTRONICS_AMMETER_TERM = "ammeter"
++ELECTRONICS_ELECTRIC_WATCH_TERMS = (
++    "electric watch",
++    "watch electric",
++    "electric wristwatch",
++    "wristwatch electric",
++    "wristwatch model electric",
++)
++GUIDANCE_NAVIGATION_SYSTEM_TERM = "navigation system"
++GUIDANCE_AUTOPILOT_TERMS = ("autopilot", "automatic pilot", "auto pilot")
++GUIDANCE_DIRECTIONAL_GYRO_TERM = "directional gyro"
++GUIDANCE_GYROSCOPE_TERM = "gyroscope"
++GUIDANCE_RADIO_COMPASS_TERM = "radio compass"
++GUIDANCE_MAGNETIC_COMPASS_TERM = "magnetic compass"
++GUIDANCE_COMPASS_TERM = "compass"
++GUIDANCE_DRIFT_METER_TERM = "drift meter"
++GUIDANCE_INCLINOMETER_TERM = "inclinometer"
++GUIDANCE_ASTRODOME_TERM = "astrodome"
++GUIDANCE_NAVIGATION_EQUIPMENT_TERM = "navigation equipment"
++CONTROL_PANEL_TERM = "control panel"
++CONTROL_SYSTEM_TERM = "control system"
++CONTROL_FLIGHT_TERM = "flight control"
++CONTROL_INSTRUMENT_PANEL_TERM = "instrument panel"
++CONTROL_FLIGHT_INSTRUMENTS_TERM = "flight instruments"
++CONTROL_G_METER_TERM = "g-meter"
++CONTROL_ACCELEROMETER_TERM = "accelerometer"
++CONTROL_FLIGHT_INSTRUMENT_TERMS = (
++    "oil temperature",
++    "oil pressure",
++    "fuel pressure",
++    "indicator temperature",
++    "tachometer",
++    "fuel quantity",
++    "temperature sensing",
++    "controllable pitch propeller",
++)
++HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM = "typewriter"
++
++
++COMPUTING_FIELD_TERMS = {
++    "title": ("computer", "processor", "calculator", "microcomputer"),
++    "topics": ("computer", "computing", "processor", "calculator", "microcomputer"),
++    "object_types": ("computer", "calculator", "microcomputer"),
++    "narrative_texts": ("computer", "computing", "processor", "calculator", "microcomputer"),
++    "physical_descriptions": ("computer", "processor", "calculator", "microcomputer"),
++    "entities": ("computer", "processor", "calculator"),
++}
++
++ELECTRONICS_FIELD_TERMS = {
++    "title": (
++        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
++        ELECTRONICS_RADAR_TERM, ELECTRONICS_RECEIVER_TERM,
++        ELECTRONICS_TRANSMITTER_TERM, ELECTRONICS_ANTENNA_TERM,
++        ELECTRONICS_VOLTMETER_TERM, ELECTRONICS_AMMETER_TERM,
++        *ELECTRONICS_ELECTRIC_WATCH_TERMS,
++    ),
++    "topics": (
++        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
++        "electronics", ELECTRONICS_RADAR_TERM,
++        *ELECTRONICS_ELECTRIC_WATCH_TERMS,
++    ),
++    "object_types": (
++        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
++        ELECTRONICS_RADAR_TERM, ELECTRONICS_RECEIVER_TERM,
++        ELECTRONICS_TRANSMITTER_TERM, ELECTRONICS_ANTENNA_TERM,
++        ELECTRONICS_AVIONICS_TERM, ELECTRONICS_COMMUNICATION_SYSTEMS_TERM,
++        ELECTRONICS_VOLTMETER_TERM, ELECTRONICS_AMMETER_TERM,
++        *ELECTRONICS_ELECTRIC_WATCH_TERMS,
++    ),
++    "narrative_texts": (
++        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor", "electronics",
++        ELECTRONICS_RADAR_TERM, ELECTRONICS_RADIO_RECEIVER_TERM,
++        ELECTRONICS_RADIO_TRANSMITTER_TERM, ELECTRONICS_VOLTMETER_TERM,
++        ELECTRONICS_AMMETER_TERM, *ELECTRONICS_ELECTRIC_WATCH_TERMS,
++    ),
++    "physical_descriptions": (
++        "transistor", ELECTRONICS_INTEGRATED_CIRCUIT_TERM, "semiconductor",
++        ELECTRONICS_RADAR_TERM, ELECTRONICS_RADIO_RECEIVER_TERM,
++        ELECTRONICS_RADIO_TRANSMITTER_TERM, ELECTRONICS_VOLTMETER_TERM,
++        ELECTRONICS_AMMETER_TERM, *ELECTRONICS_ELECTRIC_WATCH_TERMS,
++    ),
++    "entities": ("transistor", "semiconductor"),
++}
++
++GUIDANCE_FIELD_TERMS = {
++    "title": (
++        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, *GUIDANCE_AUTOPILOT_TERMS,
++        GUIDANCE_DIRECTIONAL_GYRO_TERM, GUIDANCE_GYROSCOPE_TERM,
++        GUIDANCE_RADIO_COMPASS_TERM, GUIDANCE_MAGNETIC_COMPASS_TERM,
++        GUIDANCE_COMPASS_TERM, GUIDANCE_DRIFT_METER_TERM,
++        GUIDANCE_INCLINOMETER_TERM, GUIDANCE_ASTRODOME_TERM,
++    ),
++    "topics": (
++        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, *GUIDANCE_AUTOPILOT_TERMS,
++        GUIDANCE_DIRECTIONAL_GYRO_TERM, GUIDANCE_RADIO_COMPASS_TERM,
++        GUIDANCE_COMPASS_TERM, GUIDANCE_DRIFT_METER_TERM,
++    ),
++    "object_types": (
++        "guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM, "autopilots",
++    ),
++    "narrative_texts": (
++        "guidance", GUIDANCE_NAVIGATION_SYSTEM_TERM, GUIDANCE_NAVIGATION_EQUIPMENT_TERM,
++        *GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_DIRECTIONAL_GYRO_TERM,
++        GUIDANCE_GYROSCOPE_TERM, GUIDANCE_RADIO_COMPASS_TERM,
++        GUIDANCE_MAGNETIC_COMPASS_TERM, GUIDANCE_COMPASS_TERM,
++        GUIDANCE_DRIFT_METER_TERM, GUIDANCE_INCLINOMETER_TERM,
++        GUIDANCE_ASTRODOME_TERM,
++    ),
++    "physical_descriptions": (
++        "guidance computer", GUIDANCE_NAVIGATION_SYSTEM_TERM,
++        *GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_DIRECTIONAL_GYRO_TERM,
++        GUIDANCE_GYROSCOPE_TERM, GUIDANCE_RADIO_COMPASS_TERM,
++        GUIDANCE_MAGNETIC_COMPASS_TERM, GUIDANCE_COMPASS_TERM,
++        GUIDANCE_DRIFT_METER_TERM, GUIDANCE_INCLINOMETER_TERM,
++        GUIDANCE_ASTRODOME_TERM,
++    ),
++    "entities": (*GUIDANCE_AUTOPILOT_TERMS, GUIDANCE_GYROSCOPE_TERM, "compass"),
++}
++
++CONTROL_FIELD_TERMS = {
++    "title": (
++        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
++        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
++        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
++        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
++    ),
++    "topics": (
++        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
++        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
++        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
++        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
++    ),
++    "object_types": (
++        CONTROL_PANEL_TERM, CONTROL_FLIGHT_TERM, CONTROL_FLIGHT_INSTRUMENTS_TERM,
++        "instrumentation",
++        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
++        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
++    ),
++    "narrative_texts": (
++        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
++        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
++        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
++        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
++    ),
++    "physical_descriptions": (
++        CONTROL_FLIGHT_TERM, CONTROL_PANEL_TERM, CONTROL_SYSTEM_TERM,
++        "instrumentation", CONTROL_INSTRUMENT_PANEL_TERM,
++        CONTROL_G_METER_TERM, CONTROL_ACCELEROMETER_TERM,
++        *CONTROL_FLIGHT_INSTRUMENT_TERMS,
++    ),
++    "entities": ("instrumentation",),
++}
++
++HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM = "keyboard"
++HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM = "display unit"
++HUMAN_MACHINE_INTERACTION_TERMINAL_TERM = "terminal"
++HUMAN_MACHINE_INTERACTION_TERMS = (
++    HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
++    "computer display",
++    "flight display",
++    "cockpit display",
++    "electronic display",
++    "crt display",
++    HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
++    "human machine interface",
++    "human computer interface",
++    "user interface",
++    "computer interface",
++    HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
++    HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
++)
++HUMAN_MACHINE_INTERACTION_FIELD_TERMS = {
++    "title": HUMAN_MACHINE_INTERACTION_TERMS,
++    "topics": HUMAN_MACHINE_INTERACTION_TERMS,
++    "object_types": (
++        HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
++        HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
++        HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
++        HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
++    ),
++    "narrative_texts": HUMAN_MACHINE_INTERACTION_TERMS,
++    "physical_descriptions": (
++        HUMAN_MACHINE_INTERACTION_KEYBOARD_TERM,
++        HUMAN_MACHINE_INTERACTION_DISPLAY_UNIT_TERM,
++        HUMAN_MACHINE_INTERACTION_TERMINAL_TERM,
++        HUMAN_MACHINE_INTERACTION_TYPEWRITER_TERM,
++    ),
++    "entities": (),
++}
++
++
++DEFAULT_POLICY = CorpusSelectionPolicy(
++    version="0.6",
++    domain_rules=(
++        DomainRule(domain="computing", field_terms=COMPUTING_FIELD_TERMS),
++        DomainRule(domain="electronics", field_terms=ELECTRONICS_FIELD_TERMS),
++        DomainRule(domain="guidance", field_terms=GUIDANCE_FIELD_TERMS),
++        DomainRule(domain="control", field_terms=CONTROL_FIELD_TERMS),
++        DomainRule(
++            domain="human_machine_interaction",
++            field_terms=HUMAN_MACHINE_INTERACTION_FIELD_TERMS,
++        ),
++    ),
++)
+--- a/src/smithsonian_rag/selection/corpus_selector.py
++++ b/src/smithsonian_rag/selection/corpus_selector.py
+@@ -1,171 +1,194 @@
+-"""Deterministic selector and aggregate report for canonical records."""
+-from __future__ import annotations
+-
+-import re
+-from collections import Counter, defaultdict
+-from typing import Any
+-
+-from smithsonian_rag.domain.models import SmithsonianRecord
+-from smithsonian_rag.selection.models import (
+-    CorpusSelectionReport,
+-    EvidenceClass,
+-    MatchedTerm,
+-    ReasonCode,
+-    SelectionResult,
+-    UnitSelectionMetrics,
+-)
+-from smithsonian_rag.selection.policy import CorpusSelectionPolicy, DEFAULT_POLICY
+-
+-
+-def _plain_text(value: Any) -> str:
+-    """Extract searchable text from a canonical field value."""
+-    if isinstance(value, str):
+-        return value
+-    if isinstance(value, list):
+-        parts: list[str] = []
+-        for item in value:
+-            if isinstance(item, str):
+-                parts.append(item)
+-            elif hasattr(item, "content"):
+-                parts.append(str(item.content))
+-            elif hasattr(item, "name"):
+-                parts.append(str(item.name))
+-        return " ".join(parts)
+-    return ""
+-
+-
+-def _normalized(text: str) -> str:
+-    """Fold punctuation and case while retaining Unicode word characters."""
+-    return re.sub(r"[^\w]+", " ", text.casefold(), flags=re.UNICODE).strip()
+-
+-
+-def _has_term(text: str, term: str) -> bool:
+-    normalized_text = f" {_normalized(text)} "
+-    normalized_term = f" {_normalized(term)} "
+-    return normalized_term in normalized_text
+-
+-
+-def _has_evidence(value: Any) -> bool:
+-    """Return whether a canonical field value contains searchable evidence."""
+-    if isinstance(value, str):
+-        return bool(value.strip())
+-    if not isinstance(value, list):
+-        return False
+-    for item in value:
+-        if isinstance(item, str) and item.strip():
+-            return True
+-        if any(
+-            isinstance(text := getattr(item, attribute, None), str) and text.strip()
+-            for attribute in ("content", "name", "value")
+-        ):
+-            return True
+-    return False
+-
+-
+-class CorpusSelector:
+-    """Select records using a versioned policy with explicit reason codes."""
+-
+-    def __init__(self, policy: CorpusSelectionPolicy = DEFAULT_POLICY) -> None:
+-        self.policy = policy
+-
+-    def _matched_terms(self, record: SmithsonianRecord) -> list[MatchedTerm]:
+-        if record.unit_code not in self.policy.supported_units:
+-            return []
+-        matches: list[MatchedTerm] = []
+-        for rule in self.policy.domain_rules:
+-            for field_name, terms in rule.field_terms.items():
+-                value = _plain_text(getattr(record, field_name))
+-                matches.extend(
+-                    MatchedTerm(domain=rule.domain, field=field_name, term=term)
+-                    for term in terms
+-                    if _has_term(value, term)
+-                )
+-        return matches
+-
+-    def _has_structured_evidence(self, record: SmithsonianRecord) -> bool:
+-        return any(
+-            _has_evidence(getattr(record, field_name))
+-            for field_name in self.policy.evidence_fields
+-        )
+-
+-    def select(self, record: SmithsonianRecord) -> SelectionResult:
+-        """Classify and decide one canonical record."""
+-        matched_terms = self._matched_terms(record)
+-        domains = list(dict.fromkeys(match.domain for match in matched_terms))
+-        has_narrative = any(text.content.strip() for text in record.narrative_texts)
+-        has_structured = self._has_structured_evidence(record)
+-        if has_narrative:
+-            evidence_class = EvidenceClass.NARRATIVE
+-        elif has_structured:
+-            evidence_class = EvidenceClass.STRUCTURED
+-        else:
+-            evidence_class = EvidenceClass.INSUFFICIENT
+-
+-        reasons: list[ReasonCode] = []
+-        if domains:
+-            reasons.append(ReasonCode.DOMAIN_MATCH)
+-            reasons.append({
+-                EvidenceClass.NARRATIVE: ReasonCode.NARRATIVE_EVIDENCE,
+-                EvidenceClass.STRUCTURED: ReasonCode.STRUCTURED_EVIDENCE,
+-                EvidenceClass.INSUFFICIENT: ReasonCode.INSUFFICIENT_EVIDENCE,
+-            }[evidence_class])
+-        else:
+-            reasons.append(ReasonCode.OUT_OF_DOMAIN)
+-        accepted = bool(domains) and evidence_class is not EvidenceClass.INSUFFICIENT
+-        return SelectionResult(
+-            record_id=record.record_id,
+-            unit_code=record.unit_code,
+-            accepted=accepted,
+-            evidence_class=evidence_class,
+-            matched_domains=domains,
+-            matched_terms=matched_terms,
+-            reason_codes=reasons,
+-            policy_version=self.policy.version,
+-        )
+-
+-    def select_many(self, records: list[SmithsonianRecord]) -> CorpusSelectionReport:
+-        """Select records in input order and return corpus and unit metrics."""
+-        results = [self.select(record) for record in records]
+-        reason_counts: Counter[str] = Counter()
+-        by_unit_results: dict[str, list[SelectionResult]] = defaultdict(list)
+-        for result in results:
+-            by_unit_results[result.unit_code].append(result)
+-            reason_counts.update(code.value for code in result.reason_codes)
+-
+-        def unit_metrics(unit_results: list[SelectionResult]) -> UnitSelectionMetrics:
+-            matched = sum(bool(result.matched_domains) for result in unit_results)
+-            accepted = sum(result.accepted for result in unit_results)
+-            narrative = sum(result.accepted and result.evidence_class is EvidenceClass.NARRATIVE for result in unit_results)
+-            structured = sum(result.accepted and result.evidence_class is EvidenceClass.STRUCTURED for result in unit_results)
+-            insufficient = sum(
+-                bool(result.matched_domains) and result.evidence_class is EvidenceClass.INSUFFICIENT
+-                for result in unit_results
+-            )
+-            out_of_domain = sum(not result.matched_domains for result in unit_results)
+-            total = len(unit_results)
+-            return UnitSelectionMetrics(
+-                input_records=total,
+-                domain_matched=matched,
+-                accepted=accepted,
+-                accepted_narrative=narrative,
+-                accepted_structured=structured,
+-                excluded_insufficient=insufficient,
+-                excluded_out_of_domain=out_of_domain,
+-                selection_rate=accepted / total if total else 0.0,
+-            )
+-
+-        overall = unit_metrics(results)
+-        return CorpusSelectionReport(
+-            policy_version=self.policy.version,
+-            input_records=overall.input_records,
+-            domain_matched=overall.domain_matched,
+-            accepted=overall.accepted,
+-            accepted_narrative=overall.accepted_narrative,
+-            accepted_structured=overall.accepted_structured,
+-            excluded_insufficient=overall.excluded_insufficient,
+-            excluded_out_of_domain=overall.excluded_out_of_domain,
+-            selection_rate=overall.selection_rate,
+-            by_unit={unit: unit_metrics(items) for unit, items in sorted(by_unit_results.items())},
+-            reason_code_distribution=dict(sorted(reason_counts.items())),
+-            results=results,
+-        )
++"""Deterministic selector and aggregate report for canonical records."""
++from __future__ import annotations
++
++import re
++from collections import Counter, defaultdict
++from typing import Any
++
++from smithsonian_rag.domain.models import SmithsonianRecord
++from smithsonian_rag.selection.models import (
++    CorpusSelectionReport,
++    EvidenceClass,
++    MatchedTerm,
++    ReasonCode,
++    SelectionResult,
++    UnitSelectionMetrics,
++)
++from smithsonian_rag.selection.policy import CorpusSelectionPolicy, DEFAULT_POLICY
++
++
++def _plain_text(value: Any) -> str:
++    """Extract searchable text from a canonical field value."""
++    if isinstance(value, str):
++        return value
++    if isinstance(value, list):
++        parts: list[str] = []
++        for item in value:
++            if isinstance(item, str):
++                parts.append(item)
++            elif hasattr(item, "content"):
++                parts.append(str(item.content))
++            elif hasattr(item, "name"):
++                parts.append(str(item.name))
++        return " ".join(parts)
++    return ""
++
++
++def _normalized(text: str) -> str:
++    """Fold punctuation and case while retaining Unicode word characters."""
++    return re.sub(r"[^\w]+", " ", text.casefold(), flags=re.UNICODE).strip()
++
++
++def _has_term(text: str, term: str) -> bool:
++    normalized_text = f" {_normalized(text)} "
++    normalized_term = f" {_normalized(term)} "
++    return normalized_term in normalized_text
++
++
++def _has_evidence(value: Any) -> bool:
++    """Return whether a canonical field value contains searchable evidence."""
++    if isinstance(value, str):
++        return bool(value.strip())
++    if not isinstance(value, list):
++        return False
++    for item in value:
++        if isinstance(item, str) and item.strip():
++            return True
++        if any(
++            isinstance(text := getattr(item, attribute, None), str) and text.strip()
++            for attribute in ("content", "name", "value")
++        ):
++            return True
++    return False
++
++
++# Incidental engine-gauge mentions do not make a complete aircraft an
++# instrumentation artifact. A primary-field match or an independent
++# technology match still qualifies a contextual aircraft record.
++INCIDENTAL_AIRCRAFT_TERMS = frozenset({
++    "oil temperature", "oil pressure", "fuel pressure", "fuel quantity",
++    "tachometer", "indicator temperature", "instrumentation",
++})
++AIRCRAFT_PLATFORM_TYPES = frozenset({"aircraft", "airplanes", "airplane", "aeroplanes", "aeroplane"})
++
++
++def _is_aircraft_platform(record: SmithsonianRecord) -> bool:
++    return any(_normalized(kind) in AIRCRAFT_PLATFORM_TYPES for kind in record.object_types)
++
++
++def _filter_incidental_aircraft_matches(record: SmithsonianRecord, matches: list[MatchedTerm]) -> list[MatchedTerm]:
++    if not _is_aircraft_platform(record):
++        return matches
++    return [
++        match for match in matches
++        if not (match.field == "narrative_texts" and match.term in INCIDENTAL_AIRCRAFT_TERMS)
++    ]
++
++
++class CorpusSelector:
++    """Select records using a versioned policy with explicit reason codes."""
++
++    def __init__(self, policy: CorpusSelectionPolicy = DEFAULT_POLICY) -> None:
++        self.policy = policy
++
++    def _matched_terms(self, record: SmithsonianRecord) -> list[MatchedTerm]:
++        if record.unit_code not in self.policy.supported_units:
++            return []
++        matches: list[MatchedTerm] = []
++        for rule in self.policy.domain_rules:
++            for field_name, terms in rule.field_terms.items():
++                value = _plain_text(getattr(record, field_name))
++                matches.extend(
++                    MatchedTerm(domain=rule.domain, field=field_name, term=term)
++                    for term in terms
++                    if _has_term(value, term)
++                )
++        return matches
++
++    def _has_structured_evidence(self, record: SmithsonianRecord) -> bool:
++        return any(
++            _has_evidence(getattr(record, field_name))
++            for field_name in self.policy.evidence_fields
++        )
++
++    def select(self, record: SmithsonianRecord) -> SelectionResult:
++        """Classify and decide one canonical record."""
++        matched_terms = _filter_incidental_aircraft_matches(record, self._matched_terms(record))
++        domains = list(dict.fromkeys(match.domain for match in matched_terms))
++        has_narrative = any(text.content.strip() for text in record.narrative_texts)
++        has_structured = self._has_structured_evidence(record)
++        if has_narrative:
++            evidence_class = EvidenceClass.NARRATIVE
++        elif has_structured:
++            evidence_class = EvidenceClass.STRUCTURED
++        else:
++            evidence_class = EvidenceClass.INSUFFICIENT
++
++        reasons: list[ReasonCode] = []
++        if domains:
++            reasons.append(ReasonCode.DOMAIN_MATCH)
++            reasons.append({
++                EvidenceClass.NARRATIVE: ReasonCode.NARRATIVE_EVIDENCE,
++                EvidenceClass.STRUCTURED: ReasonCode.STRUCTURED_EVIDENCE,
++                EvidenceClass.INSUFFICIENT: ReasonCode.INSUFFICIENT_EVIDENCE,
++            }[evidence_class])
++        else:
++            reasons.append(ReasonCode.OUT_OF_DOMAIN)
++        accepted = bool(domains) and evidence_class is not EvidenceClass.INSUFFICIENT
++        return SelectionResult(
++            record_id=record.record_id,
++            unit_code=record.unit_code,
++            accepted=accepted,
++            evidence_class=evidence_class,
++            matched_domains=domains,
++            matched_terms=matched_terms,
++            reason_codes=reasons,
++            policy_version=self.policy.version,
++        )
++
++    def select_many(self, records: list[SmithsonianRecord]) -> CorpusSelectionReport:
++        """Select records in input order and return corpus and unit metrics."""
++        results = [self.select(record) for record in records]
++        reason_counts: Counter[str] = Counter()
++        by_unit_results: dict[str, list[SelectionResult]] = defaultdict(list)
++        for result in results:
++            by_unit_results[result.unit_code].append(result)
++            reason_counts.update(code.value for code in result.reason_codes)
++
++        def unit_metrics(unit_results: list[SelectionResult]) -> UnitSelectionMetrics:
++            matched = sum(bool(result.matched_domains) for result in unit_results)
++            accepted = sum(result.accepted for result in unit_results)
++            narrative = sum(result.accepted and result.evidence_class is EvidenceClass.NARRATIVE for result in unit_results)
++            structured = sum(result.accepted and result.evidence_class is EvidenceClass.STRUCTURED for result in unit_results)
++            insufficient = sum(
++                bool(result.matched_domains) and result.evidence_class is EvidenceClass.INSUFFICIENT
++                for result in unit_results
++            )
++            out_of_domain = sum(not result.matched_domains for result in unit_results)
++            total = len(unit_results)
++            return UnitSelectionMetrics(
++                input_records=total,
++                domain_matched=matched,
++                accepted=accepted,
++                accepted_narrative=narrative,
++                accepted_structured=structured,
++                excluded_insufficient=insufficient,
++                excluded_out_of_domain=out_of_domain,
++                selection_rate=accepted / total if total else 0.0,
++            )
++
++        overall = unit_metrics(results)
++        return CorpusSelectionReport(
++            policy_version=self.policy.version,
++            input_records=overall.input_records,
++            domain_matched=overall.domain_matched,
++            accepted=overall.accepted,
++            accepted_narrative=overall.accepted_narrative,
++            accepted_structured=overall.accepted_structured,
++            excluded_insufficient=overall.excluded_insufficient,
++            excluded_out_of_domain=overall.excluded_out_of_domain,
++            selection_rate=overall.selection_rate,
++            by_unit={unit: unit_metrics(items) for unit, items in sorted(by_unit_results.items())},
++            reason_code_distribution=dict(sorted(reason_counts.items())),
++            results=results,
++        )
+--- a/tests/selection/test_corpus_selector.py
++++ b/tests/selection/test_corpus_selector.py
+@@ -23,7 +23,7 @@
+     assert result.evidence_class is EvidenceClass.NARRATIVE
+     assert result.matched_domains == ["computing", "guidance"]
+     assert result.reason_codes == [ReasonCode.DOMAIN_MATCH, ReasonCode.NARRATIVE_EVIDENCE]
+-    assert result.policy_version == "0.5"
++    assert result.policy_version == "0.6"
+     assert {match.term for match in result.matched_terms} == {"computer", "guidance"}
+ 
+ 

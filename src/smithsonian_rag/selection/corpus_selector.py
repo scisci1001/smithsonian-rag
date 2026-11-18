@@ -62,6 +62,29 @@ def _has_evidence(value: Any) -> bool:
     return False
 
 
+# Incidental engine-gauge mentions do not make a complete aircraft an
+# instrumentation artifact. A primary-field match or an independent
+# technology match still qualifies a contextual aircraft record.
+INCIDENTAL_AIRCRAFT_TERMS = frozenset({
+    "oil temperature", "oil pressure", "fuel pressure", "fuel quantity",
+    "tachometer", "indicator temperature", "instrumentation",
+})
+AIRCRAFT_PLATFORM_TYPES = frozenset({"aircraft", "airplanes", "airplane", "aeroplanes", "aeroplane"})
+
+
+def _is_aircraft_platform(record: SmithsonianRecord) -> bool:
+    return any(_normalized(kind) in AIRCRAFT_PLATFORM_TYPES for kind in record.object_types)
+
+
+def _filter_incidental_aircraft_matches(record: SmithsonianRecord, matches: list[MatchedTerm]) -> list[MatchedTerm]:
+    if not _is_aircraft_platform(record):
+        return matches
+    return [
+        match for match in matches
+        if not (match.field == "narrative_texts" and match.term in INCIDENTAL_AIRCRAFT_TERMS)
+    ]
+
+
 class CorpusSelector:
     """Select records using a versioned policy with explicit reason codes."""
 
@@ -90,7 +113,7 @@ class CorpusSelector:
 
     def select(self, record: SmithsonianRecord) -> SelectionResult:
         """Classify and decide one canonical record."""
-        matched_terms = self._matched_terms(record)
+        matched_terms = _filter_incidental_aircraft_matches(record, self._matched_terms(record))
         domains = list(dict.fromkeys(match.domain for match in matched_terms))
         has_narrative = any(text.content.strip() for text in record.narrative_texts)
         has_structured = self._has_structured_evidence(record)
